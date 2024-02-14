@@ -1,8 +1,9 @@
 // import Login from "./pages/Login";
-import Signup from "./pages/Signup";
+import EmailConf from "./pages/EmailConfirm";
+// import Signup from "./pages/Signup";
 
 function App() {
-  return <Signup />;
+  return <EmailConf />;
 }
 
 export default App;

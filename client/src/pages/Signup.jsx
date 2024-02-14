@@ -1,3 +1,4 @@
+import AuthImage from "../assets/rect.png";
 export default function Signup() {
   return (
     <div className="justify-end py-4 pr-4 pl-20 bg-white max-md:pl-5">
@@ -54,7 +55,7 @@ export default function Signup() {
               <div className="flex gap-1.5">
                 <img
                   loading="lazy"
-                  srcSet="..."
+                  srcSet="https://cdn.builder.io/api/v1/image/assets/TEMP/bb0808eec4077776ddd4045297f846d03950bf0f50b2d1748cb0c41d5c8eb63b?apiKey=e20c1380c3024da1bb502cf228422d26&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/bb0808eec4077776ddd4045297f846d03950bf0f50b2d1748cb0c41d5c8eb63b?apiKey=e20c1380c3024da1bb502cf228422d26&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/bb0808eec4077776ddd4045297f846d03950bf0f50b2d1748cb0c41d5c8eb63b?apiKey=e20c1380c3024da1bb502cf228422d26&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/bb0808eec4077776ddd4045297f846d03950bf0f50b2d1748cb0c41d5c8eb63b?apiKey=e20c1380c3024da1bb502cf228422d26&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/bb0808eec4077776ddd4045297f846d03950bf0f50b2d1748cb0c41d5c8eb63b?apiKey=e20c1380c3024da1bb502cf228422d26&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/bb0808eec4077776ddd4045297f846d03950bf0f50b2d1748cb0c41d5c8eb63b?apiKey=e20c1380c3024da1bb502cf228422d26&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/bb0808eec4077776ddd4045297f846d03950bf0f50b2d1748cb0c41d5c8eb63b?apiKey=e20c1380c3024da1bb502cf228422d26&width=2000 2000w, https://cdn.builder.io/api/v1/image/assets/TEMP/bb0808eec4077776ddd4045297f846d03950bf0f50b2d1748cb0c41d5c8eb63b?apiKey=e20c1380c3024da1bb502cf228422d26&"
                   className="aspect-square w-[22px]"
                 />
                 <div className="grow">Continue with google</div>
@@ -64,7 +65,7 @@ export default function Signup() {
               <div className="flex gap-1.5">
                 <img
                   loading="lazy"
-                  srcSet="..."
+                  srcSet="https://cdn.builder.io/api/v1/image/assets/TEMP/51c57f882c0782062292315afe903d1230c33f7db5b4de4668c79ca1db13e353?apiKey=e20c1380c3024da1bb502cf228422d26&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/51c57f882c0782062292315afe903d1230c33f7db5b4de4668c79ca1db13e353?apiKey=e20c1380c3024da1bb502cf228422d26&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/51c57f882c0782062292315afe903d1230c33f7db5b4de4668c79ca1db13e353?apiKey=e20c1380c3024da1bb502cf228422d26&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/51c57f882c0782062292315afe903d1230c33f7db5b4de4668c79ca1db13e353?apiKey=e20c1380c3024da1bb502cf228422d26&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/51c57f882c0782062292315afe903d1230c33f7db5b4de4668c79ca1db13e353?apiKey=e20c1380c3024da1bb502cf228422d26&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/51c57f882c0782062292315afe903d1230c33f7db5b4de4668c79ca1db13e353?apiKey=e20c1380c3024da1bb502cf228422d26&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/51c57f882c0782062292315afe903d1230c33f7db5b4de4668c79ca1db13e353?apiKey=e20c1380c3024da1bb502cf228422d26&width=2000 2000w, https://cdn.builder.io/api/v1/image/assets/TEMP/51c57f882c0782062292315afe903d1230c33f7db5b4de4668c79ca1db13e353?apiKey=e20c1380c3024da1bb502cf228422d26&"
                   className="aspect-square w-[22px]"
                 />
                 <div className="grow">Continue with apple</div>
@@ -75,7 +76,7 @@ export default function Signup() {
         <div className="flex flex-col ml-5 w-[58%] max-md:ml-0 max-md:w-full">
           <img
             loading="lazy"
-            srcSet="..."
+            src={AuthImage}
             className="grow w-full aspect-[0.71] max-md:mt-10 max-md:max-w-full"
           />
         </div>
