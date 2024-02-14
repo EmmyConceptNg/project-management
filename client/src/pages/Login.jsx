@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function Login() {
   return (
     <div className="justify-end py-4 pr-4 pl-20 bg-white max-md:pl-5">
@@ -26,15 +28,18 @@ export default function Login() {
               src="https://cdn.builder.io/api/v1/image/assets/TEMP/2efea8d3ad49ce96ec14d60650421964d7c7bc79f47462a90e3e8dde4e0fab17?apiKey=e20c1380c3024da1bb502cf228422d26&"
               className="w-6 aspect-square"
             /> */}
-            <div className="self-end mt-3.5 text-base font-medium text-blue-600 whitespace-nowrap">
+            <Link
+              to="/recovery"
+              className="self-start mt-3.5 text-base font-medium text-blue-600 whitespace-nowrap"
+            >
               Forgot Password?
-            </div>
-            <button
-              onClick={() => console.log("Login")}
+            </Link>
+            <Link
+              to="/workspace"
               className="justify-center items-center px-16 py-3.5 mt-8 text-base font-medium text-white whitespace-nowrap bg-blue-600 rounded-xl border border-solid border-zinc-300 max-md:px-5 max-md:max-w-full"
             >
               Login
-            </button>
+            </Link>
             <div className="flex gap-5 items-center self-center mt-11 text-base font-medium whitespace-nowrap text-neutral-400 max-md:flex-wrap max-md:mt-10 max-md:max-w-full">
               {/* <img
                 loading="lazy"

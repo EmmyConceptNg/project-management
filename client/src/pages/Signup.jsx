@@ -1,4 +1,5 @@
 import AuthImage from "../assets/rect.png";
+import { Link } from "react-router-dom";
 export default function Signup() {
   return (
     <div className="justify-end py-4 pr-4 pl-20 bg-white max-md:pl-5">
@@ -35,9 +36,12 @@ export default function Signup() {
                 I agree to terms of service and privacy policy
               </div>
             </div>
-            <button className="justify-center items-center px-16 py-4 mt-10 text-base font-medium text-white whitespace-nowrap bg-blue-600 rounded-xl border border-solid border-zinc-300 max-md:px-5 max-md:max-w-full">
+            <Link
+              to="/confirm"
+              className="justify-center items-center px-16 py-4 mt-10 text-base font-medium text-white whitespace-nowrap bg-blue-600 rounded-xl border border-solid border-zinc-300 max-md:px-5 max-md:max-w-full"
+            >
               Continue with email
-            </button>
+            </Link>
             <div className="flex gap-5 items-center self-center mt-11 text-base font-medium whitespace-nowrap text-neutral-400 max-md:flex-wrap max-md:mt-10 max-md:max-w-full">
               {/* <img
                 loading="lazy"

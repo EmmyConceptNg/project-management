@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import AuthImage from "../assets/rect.png";
 export default function EmailConf() {
   return (
@@ -25,12 +26,12 @@ export default function EmailConf() {
                 <input className="mt-7 bg-white rounded-xl border border-solid border-zinc-300 h-[60px] w-[52px]" />
               </div>
             </div>
-            <button
-              onClick={() => console.log("Login")}
+            <Link
+              to="/workspace"
               className="justify-center items-center px-16 py-3.5 mt-8 text-base font-medium text-white whitespace-nowrap bg-blue-600 rounded-xl border border-solid border-zinc-300 max-md:px-5 max-md:max-w-full"
             >
               Confirm Code
-            </button>
+            </Link>
             <a
               onClick={() => alert("Clicked")}
               className="mt-10 text-blue-600 max-md:mt-10 max-md:max-w-full"
