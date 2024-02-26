@@ -1,41 +1,254 @@
-import { Link } from "react-router-dom";
+import { Box, FormControl, MenuItem, OutlinedInput, Select, Stack } from "@mui/material";
+import Text from "../components/utils/Text";
+import { useState } from "react";
+import { LoadingButton } from "@mui/lab";
 
-export default function WorkSpaceSetup() {
-  return (
-    <div className="flex flex-col items-center py-6 bg-white">
-      <div className="mt-8 text-3xl font-semibold whitespace-nowrap text-neutral-800">
-        Set Up Your Workspace
-      </div>
-      <div className="mt-3.5 text-sm text-center text-neutral-800">
-        Enter the name of your workspace and manage all projects in it.
-      </div>
-      <img
-        loading="lazy"
-        src="https://cdn.builder.io/api/v1/image/assets/TEMP/60ce284d417f19e79e4bafdf9cd9cd944337a9428f044c1a93fb83defdb1e18a?"
-        className="mt-12 max-w-full aspect-square w-[114px] max-md:mt-10"
-      />
-      <div className="mt-14 text-base font-medium whitespace-nowrap text-neutral-800 max-md:mt-10">
-        Work Space Name
-      </div>
-      <input className="mt-2.5 max-w-full h-11 rounded-lg border border-solid border-zinc-300 w-[520px]" />
-      <div className="mt-6 text-base font-medium text-neutral-800 max-md:max-w-full">
-        How many projects you intend to manage in this workspace
-      </div>
-      <select className="flex flex-col justify-center items-end py-2.5 pr-5 pl-16 mt-2.5 max-w-full rounded-lg border border-solid border-zinc-300 w-[520px] max-md:pl-5">
-        <option></option>
-        <option>1</option>
-        <option>2</option>
-        <option>3</option>
-        <option>4</option>
-        <option>5</option>
-        <option>6</option>
-      </select>
-      <Link
-        to="/profile"
-        className="justify-center items-center px-16 py-4 mt-10 max-w-full text-base font-medium text-white whitespace-nowrap bg-blue-600 rounded-xl w-[520px] max-md:px-5"
-      >
-        Next
-      </Link>
-    </div>
-  );
-}
+export default function WorkSpaceSetup(){
+  const [payload, setPayload] = useState({
+    name : '',
+    projects :''
+  })
+  const [userDetails, setUserDetais] = useState(false)
+  const [nextBtn, setNextBtn] = useState(false);
+  const handleChange = (e) =>{
+const {value, name} = e.target;
+setPayload(prev => ({prev, [name] : value}))
+  }
+
+  const setupBtn = ()=>{
+    setUserDetais(true)
+    setNextBtn(false);
+  }
+return (
+  <>
+    {!userDetails ? (
+      <Box display="flex">
+        <Stack spacing={10} mx="auto" mt={10}>
+          <Box>
+            <Text
+              fw="600"
+              fs="32px"
+              color="#262626"
+              sx={{ textAlign: "center", marginBottom: "10px" }}
+            >
+              Set Up Your Workspace
+            </Text>
+            <Text
+              fw="400"
+              fs="14px"
+              color="#262626"
+              sx={{ textAlign: "center" }}
+            >
+              Enter the name of your workspace and manage all projects in it.
+            </Text>
+          </Box>
+          <Stack spacing={3}>
+            <Box display="flex">
+              {" "}
+              <Box
+                component="img"
+                src="assets/icons/add-image.svg"
+                sx={{ width: "114px", height: "114px", mx: "auto" }}
+              />
+            </Box>
+            <FormControl variant="outlined" sx={{ width: "100%" }}>
+              <label htmlFor="password" style={{ marginBottom: "10px" }}>
+                <Text fw="500" fs="16px" ml={5}>
+                  Work Space Name
+                </Text>
+              </label>
+              <OutlinedInput
+                size="small"
+                required
+                id="name"
+                type="text"
+                name="name"
+                value={payload.name}
+                onChange={handleChange}
+              />
+            </FormControl>
+            <FormControl>
+              <label htmlFor="projects" style={{ marginBottom: "10px" }}>
+                <Text fw="500" fs="16px" ml={5}>
+                  How many projects you intend to manage in this workspace
+                </Text>
+              </label>
+              <Select
+                labelId="projects"
+                size="small"
+                fullWidth
+                name="projects"
+                value={payload.projects}
+                onChange={handleChange}
+                input={<OutlinedInput label="" />}
+              >
+                {["option1", "option2"].map((name) => (
+                  <MenuItem key={name} value={name}>
+                    {name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <LoadingButton
+              loading={nextBtn}
+              onClick={setupBtn}
+              variant="contained"
+              color="primary"
+              sx={{ textTransform: "capitalize" }}
+            >
+              Next
+            </LoadingButton>
+          </Stack>
+        </Stack>
+      </Box>
+    ) : (
+      <Box display="flex">
+        <Stack spacing={10} mx="auto" mt={10}>
+          <Box>
+            <Text
+              fw="600"
+              fs="32px"
+              color="#262626"
+              sx={{ textAlign: "center", marginBottom: "10px" }}
+            >
+              Profile Setup
+            </Text>
+            <Text
+              fw="400"
+              fs="14px"
+              color="#262626"
+              sx={{ textAlign: "center" }}
+            >
+              Now manage your projects in fast and efficient way!
+            </Text>
+          </Box>
+          <Stack spacing={3}>
+            <Box display="flex">
+              <Box
+                component="img"
+                src="assets/icons/add-image-2.svg"
+                sx={{ width: "114px", height: "114px", mx: "auto" }}
+              />
+            </Box>
+            <FormControl variant="outlined" sx={{ width: "100%" }}>
+              <label htmlFor="password" style={{ marginBottom: "10px" }}>
+                <Text fw="500" fs="16px" ml={5}>
+                  Full Name
+                </Text>
+              </label>
+              <OutlinedInput
+                size="small"
+                required
+                id="fullname"
+                type="text"
+                name="fullname"
+                value={payload.fullName}
+                onChange={handleChange}
+              />
+            </FormControl>
+            <FormControl>
+              <label htmlFor="projects" style={{ marginBottom: "10px" }}>
+                <Text fw="500" fs="16px" ml={5}>
+                  Your Role
+                </Text>
+              </label>
+              <Select
+                labelId="projects"
+                size="small"
+                fullWidth
+                name="projects"
+                value={payload.role}
+                onChange={handleChange}
+                input={<OutlinedInput label="" />}
+              >
+                {["option1", "option2"].map((name) => (
+                  <MenuItem key={name} value={name}>
+                    {name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl>
+              <label htmlFor="projects" style={{ marginBottom: "10px" }}>
+                <Text fw="500" fs="16px" ml={5}>
+                  Your Industry
+                </Text>
+              </label>
+              <Select
+                labelId="projects"
+                size="small"
+                fullWidth
+                name="projects"
+                value={payload.industry}
+                onChange={handleChange}
+                input={<OutlinedInput label="" />}
+              >
+                {["option1", "option2"].map((name) => (
+                  <MenuItem key={name} value={name}>
+                    {name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            
+            <FormControl>
+              <label htmlFor="projects" style={{ marginBottom: "10px" }}>
+                <Text fw="500" fs="16px" ml={5}>
+                  Number of people you intend to add in your project
+                </Text>
+              </label>
+              <Select
+                labelId="projects"
+                size="small"
+                fullWidth
+                name="projects"
+                value={payload.people}
+                onChange={handleChange}
+                input={<OutlinedInput label="" />}
+              >
+                {["option1", "option2"].map((name) => (
+                  <MenuItem key={name} value={name}>
+                    {name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl>
+              <label htmlFor="projects" style={{ marginBottom: "10px" }}>
+                <Text fw="500" fs="16px" ml={5}>
+                  How many projects you intend to manage?
+                </Text>
+              </label>
+              <Select
+                labelId="projects"
+                size="small"
+                fullWidth
+                name="projects"
+                value={payload.project}
+                onChange={handleChange}
+                input={<OutlinedInput label="" />}
+              >
+                {["option1", "option2"].map((name) => (
+                  <MenuItem key={name} value={name}>
+                    {name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <LoadingButton
+              loading={nextBtn}
+              onClick={setupBtn}
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={{ textTransform: "capitalize" }}
+            >
+              Done
+            </LoadingButton>
+          </Stack>
+        </Stack>
+      </Box>
+    )}
+  </>
+);
+};
