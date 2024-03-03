@@ -42,6 +42,7 @@ export default function Login() {
   const handleLogin = (e) => {
     e.preventDefault();
     setLoginBtn(true);
+    navigate('/dashboard')
 
     axios
       .post("/api/auth/login", payload, {
@@ -82,11 +83,7 @@ export default function Login() {
               <Text fw="600" fs="24px" color="#1A1A1A">
                 Login
               </Text>
-              <Text
-                fw="400"
-                color="#1A1A1A"
-                fs="16px" mt={10}
-              >
+              <Text fw="400" color="#1A1A1A" fs="16px" mt={10}>
                 Enter your credentials to get started
               </Text>
               <Box component="form" onSubmit={handleLogin}>
@@ -96,7 +93,7 @@ export default function Login() {
                   sx={{ width: { lg: "520px", sm: "450px" } }}
                 >
                   <FormControl variant="outlined" sx={{ width: "100%" }}>
-                    <label htmlFor="password" style={{marginBottom: '10px'}}>
+                    <label htmlFor="password" style={{ marginBottom: "10px" }}>
                       <Text fw="500" fs="16px" ml={5}>
                         Email
                       </Text>
@@ -111,7 +108,7 @@ export default function Login() {
                     />
                   </FormControl>
                   <FormControl variant="outlined" sx={{ width: "100%" }}>
-                    <label htmlFor="password" style={{marginBottom: '10px'}}>
+                    <label htmlFor="password" style={{ marginBottom: "10px" }}>
                       <Text fw="500" fs="16px" ml={5}>
                         Password
                       </Text>
@@ -168,8 +165,7 @@ export default function Login() {
               <Divider>
                 <Text
                   fw="500"
-                  fs="15px
-"
+                  fs="15px"
                 >
                   OR
                 </Text>
@@ -205,6 +201,22 @@ export default function Login() {
                   </Text>
                 </Box>
               </Box>
+              <Box display="flex" justifyContent={"center"}>
+                <Text sx={{ textAlign: "center" }}>
+                  Don't have an account?
+                </Text>
+                <Text
+                  onClick={() => navigate("/")}
+                  sx={{
+                    textAlign: "center",
+                    marginLeft: 7,
+                    color: "#1166EA",
+                    cursor: "pointer",
+                  }}
+                >
+                  Sign Up
+                </Text>
+              </Box>
             </Stack>
           </Box>
         </Grid>
@@ -217,7 +229,7 @@ export default function Login() {
           sx={{ display: { md: "block", sm: "none", xs: "none" } }}
         >
           <Box
-            sx={{ ml: "auto" }}
+            sx={{ ml: "auto", height : '100vh' }}
             component="img"
             src="assets/images/auth-image.svg"
           />

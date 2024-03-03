@@ -8,12 +8,13 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { Icon } from "@iconify/react";
-import { StakeHolderMenuItems } from "./StakeHolderMenuItems";
+
 import { useNavigate, useLocation } from "react-router-dom";
 import Text from "../../components/utils/Text";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import { ProjectManagerMenuItems } from "./ProjectManagerMenuItems";
 
-export const Sidebar = () => {
+export const PMSidebar = () => {
   const [open, setOpen] = useState(true);
   const [id, setId] = useState("");
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ export const Sidebar = () => {
       </Box>
 
       <Box mt={5}>
-        {StakeHolderMenuItems.map((item) => (
+        {ProjectManagerMenuItems.map((item) => (
           <Box key={item.id}>
             <ListItemButton
               onClick={() => handleClick(item.id, item?.link)}

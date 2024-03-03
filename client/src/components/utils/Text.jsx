@@ -1,3 +1,5 @@
+import { Typography } from "@mui/material";
+
 export default function Text({
   fs,
   fw,
@@ -47,8 +49,8 @@ export default function Text({
     ...sx,
   };
   return (
-    <p style={mergedStyles} id={id} onClick={onClick} className={className}>
+    <Typography style={mergedStyles} id={id} onClick={onClick} className={className}>
       {children}
-    </p>
+    </Typography>
   );
 }

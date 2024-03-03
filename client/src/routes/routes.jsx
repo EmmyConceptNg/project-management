@@ -1,4 +1,4 @@
-import { useRoutes } from "react-router-dom"
+import { Navigate, useRoutes } from "react-router-dom"
 import Signup from "../pages/auth/Signup"
 import Login from "../pages/auth/Login";
 import ConfirmEmail from "../pages/auth/EmailConfirm";

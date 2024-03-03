@@ -1,19 +1,14 @@
-import EmailConf from "./pages/auth/EmailConfirm";
-import ForgotPass1 from "./pages/auth/ForgotPass1";
-import ForgotPass2 from "./pages/auth/ForgotPass2";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./pages/auth/Login";
-import ProfileSetup from "./pages/ProfileSetup";
-import Signup from "./pages/auth/Signup";
-import WorkSpaceSetup from "./pages/WorkSpaceSetup";
+import { ProjectManagerRoutes } from "./routes/ProjectManagerRoutes";
 import { Router } from "./routes/routes";
+import { StakeholdersRoutes } from "./routes/StakeholdersRoutes";
 
 function App() {
   return (
-    <Router />
-    
-     
-    
+    <>
+      <Router />
+      <StakeholdersRoutes />
+      <ProjectManagerRoutes />
+    </>
   );
 }
 

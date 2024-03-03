@@ -44,7 +44,7 @@ export default function Signup() {
   const handleLogin = (e) => {
     e.preventDefault();
     setLoginBtn(true);
-
+navigate('/dashboard')
     axios
       .post("/api/auth/login", payload, {
         headers: { "Content-Type": "application/json" },
@@ -76,19 +76,21 @@ export default function Signup() {
   return (
     <Box>
       <Grid container spacing={1} justifyContent="space-between">
-        <Grid item md={6} lg={6} xs={12} sm={12}>
+        <Grid item md={7} lg={7} xs={12} sm={12}>
           <Box display="flex" height={"100vh"}>
             <Stack
               m="auto"
               spacing={5}
               sx={{ width: { lg: "520px", sm: "450px" } }}
             >
-              <Text fw="600" fs="24px" color="#1A1A1A">
-                Sign Up
-              </Text>
-              <Text fw="400" color="#1A1A1A" fs="16px" mt={10}>
-                Create your account to start managing your projects today!
-              </Text>
+              <Box>
+                <Text fw="600" fs="24px" mb={1} color="#1A1A1A">
+                  Sign Up
+                </Text>
+                <Text fw="400" color="#1A1A1A" fs="16px">
+                  Create your account to start managing your projects today!
+                </Text>
+              </Box>
               <Box component="form" onSubmit={handleLogin}>
                 <Stack
                   spacing={2}
@@ -204,19 +206,29 @@ export default function Signup() {
                   </Text>
                 </Box>
               </Box>
+              <Box display="flex" justifyContent={"center"}>
+                <Text sx={{ textAlign: "center" }}>
+                  Already have the account?
+                </Text>
+                <Text onClick={() => navigate('/login')}
+                  sx={{ textAlign: "center", marginLeft: 7, color: "#1166EA", cursor : 'pointer' }}
+                >
+                  Log in
+                </Text>
+              </Box>
             </Stack>
           </Box>
         </Grid>
         <Grid
           item
-          md={6}
-          lg={6}
+          md={5}
+          lg={5}
           xs={12}
           sm={12}
           sx={{ display: { md: "block", sm: "none", xs: "none" } }}
         >
           <Box
-            sx={{ ml: "auto" }}
+            sx={{ ml: "auto", height: "100vh" }}
             component="img"
             src="assets/images/auth-image.svg"
           />
