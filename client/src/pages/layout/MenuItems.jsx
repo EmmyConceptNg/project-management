@@ -1,4 +1,4 @@
-export const StakeHolderMenuItems = [
+export const MenuItems = [
   {
     id: "dashboard",
     name: "Dashboard",
@@ -6,12 +6,23 @@ export const StakeHolderMenuItems = [
     link: "/dashboard/app",
   },
   {
+    id: "project-new",
+    name: "Create New Project",
+    icon: "uil:folder-plus",
+    link: "/dashboard/projects/create",
+    modal: true,
+  },
+  {
     id: "projects",
     name: "Projects",
     icon: "material-symbols:folder-outline",
-    
+
     group: [
-      { id: "ongoing", name: "On-going", link: "/dashboard/projects/ongoing" },
+      {
+        id: "ongoing",
+        name: "On-going",
+        link: "/dashboard/projects/ongoing",
+      },
       {
         id: "completed",
         name: "Completed",
@@ -19,11 +30,12 @@ export const StakeHolderMenuItems = [
       },
     ],
   },
+
   {
     id: "settings",
     name: "Settings",
     icon: "solar:settings-linear",
-    
+
     group: [
       { id: "profile", name: "Profile", link: "/dashboard/profile" },
       {

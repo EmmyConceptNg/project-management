@@ -41,21 +41,19 @@ export default function Signup() {
     });
   };
 
-  const handleLogin = (e) => {
+  const handleSignup = (e) => {
+    dispatch({ type: "LOGOUT"});
     e.preventDefault();
     setLoginBtn(true);
-navigate('/dashboard')
+
     axios
-      .post("/api/auth/login", payload, {
+      .post("/api/user/signup", payload, {
         headers: { "Content-Type": "application/json" },
       })
       .then((response) => {
+        console.log(response.data)
         dispatch({ type: "SET_USER", payload: response.data.user });
-        if (response.data.user.role === "admin") {
-          navigate("/admin");
-        } else {
-          navigate("/dashboard");
-        }
+          navigate("/workspace");
       })
       .catch((error) => {
         notify(error?.response?.data?.error, "error");
@@ -91,7 +89,7 @@ navigate('/dashboard')
                   Create your account to start managing your projects today!
                 </Text>
               </Box>
-              <Box component="form" onSubmit={handleLogin}>
+              <Box component="form" onSubmit={handleSignup}>
                 <Stack
                   spacing={2}
                   mt={5}
@@ -210,8 +208,14 @@ navigate('/dashboard')
                 <Text sx={{ textAlign: "center" }}>
                   Already have the account?
                 </Text>
-                <Text onClick={() => navigate('/login')}
-                  sx={{ textAlign: "center", marginLeft: 7, color: "#1166EA", cursor : 'pointer' }}
+                <Text
+                  onClick={() => navigate("/login")}
+                  sx={{
+                    textAlign: "center",
+                    marginLeft: 7,
+                    color: "#1166EA",
+                    cursor: "pointer",
+                  }}
                 >
                   Log in
                 </Text>
@@ -221,17 +225,36 @@ navigate('/dashboard')
         </Grid>
         <Grid
           item
-          md={5}
-          lg={5}
+          md={6}
+          lg={6}
           xs={12}
           sm={12}
-          sx={{ display: { md: "block", sm: "none", xs: "none" } }}
+          sx={{
+            display: { md: "block", sm: "none", xs: "none" },
+          }}
         >
           <Box
-            sx={{ ml: "auto", height: "100vh" }}
-            component="img"
-            src="assets/images/auth-image.svg"
-          />
+            sx={{
+              height: "100vh",
+              width: "100%",
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            <Box
+              component="img"
+              src="assets/images/auth-image.svg"
+              alt="Authentication"
+              sx={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+              }}
+            />
+          </Box>
         </Grid>
       </Grid>
     </Box>

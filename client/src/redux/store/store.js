@@ -4,9 +4,11 @@ import storage from "redux-persist/lib/storage";
 import { configureStore } from "@reduxjs/toolkit";
 
 import userReducer from "../reducers/userReducer";
+import WorkspaceReducer from "../reducers/WorkspaceReducer";
 
 const rootReducer = combineReducers({
   user: userReducer,
+  workspace : WorkspaceReducer
 });
 
 const persistConfig = {

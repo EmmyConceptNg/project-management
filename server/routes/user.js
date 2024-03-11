@@ -5,6 +5,7 @@ import {
   forgotpassword,
   resetpassword,
   verifyUser,
+  setUpUser,
 } from "../controllers/user.js";
 
 const router = express.Router();
@@ -23,5 +24,6 @@ router.post("/reset-password", resetpassword);
 
 // otp route
 router.post("/verify-user", verifyUser);
+router.post("/setup", setUpUser);
 
 export default router;

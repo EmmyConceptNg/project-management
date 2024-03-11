@@ -22,10 +22,6 @@ export const Router = () => {
       element: <ConfirmEmail />,
     },
     {
-      path: "/workspace",
-      element: <WorkSpaceSetup />,
-    },
-    {
       path: "/profile",
       element: <ProfileSetup />,
     },

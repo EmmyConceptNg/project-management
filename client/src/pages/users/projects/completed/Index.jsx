@@ -1,8 +1,11 @@
 import { Avatar, AvatarGroup, Box, Container, Divider, Grid, IconButton, LinearProgress, Popover, Stack } from '@mui/material'
 import Text from '../../../../components/utils/Text';
 import { MoreVert } from '@mui/icons-material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from '../../../../api/axios';
+import { useSelector } from 'react-redux';
+import moment from 'moment';
 
 export default function Completed() {
    const [anchorEl, setAnchorEl] = useState(null);
@@ -22,75 +25,19 @@ export default function Completed() {
    const id = open ? "simple-popover" : undefined;
 
    const navigate = useNavigate()
+   const [pageLoading, setPageLoading] = useState(true)
 
-  const [projects, setProjects] = useState([
-    {
-      name: "Project Alpha",
-      owner: "Jack Johnson",
-      manager: "Alex Jacob",
-      startDate: "Nov 20, 2023",
-      endDate: "Dec 28, 2023",
-      progress: 78,
-      members: ["", "", "", ""],
-      updatedAt: "Nov 29,2023",
-      updatedBy: "Alex",
-    },
-    {
-      name: "Project Alpha",
-      owner: "Jack Johnson",
-      manager: "Alex Jacob",
-      startDate: "Nov 20, 2023",
-      endDate: "Dec 28, 2023",
-      progress: 78,
-      members: ["", "", "", ""],
-      updatedAt: "Nov 29,2023",
-      updatedBy: "Alex",
-    },
-    {
-      name: "Project Alpha",
-      owner: "Jack Johnson",
-      manager: "Alex Jacob",
-      startDate: "Nov 20, 2023",
-      endDate: "Dec 28, 2023",
-      progress: 78,
-      members: ["", "", "", ""],
-      updatedAt: "Nov 29,2023",
-      updatedBy: "Alex",
-    },
-    {
-      name: "Project Alpha",
-      owner: "Jack Johnson",
-      manager: "Alex Jacob",
-      startDate: "Nov 20, 2023",
-      endDate: "Dec 28, 2023",
-      progress: 78,
-      members: ["", "", "", ""],
-      updatedAt: "Nov 29,2023",
-      updatedBy: "Alex",
-    },
-    {
-      name: "Project Alpha",
-      owner: "Jack Johnson",
-      manager: "Alex Jacob",
-      startDate: "Nov 20, 2023",
-      endDate: "Dec 28, 2023",
-      progress: 78,
-      members: ["", "", "", ""],
-      updatedAt: "Nov 29,2023",
-      updatedBy: "Alex",
-    },
-    {
-      name: "Project Alpha",
-      owner: "Jack Johnson",
-      manager: "Alex Jacob",
-      startDate: "Nov 20, 2023",
-      endDate: "Dec 28, 2023",
-      progress: 78,
-      members: ["", "", "", ""],
-      updatedAt: "Nov 29,2023",
-      updatedBy: "Alex",
-    },
-  ]);
+  const [projects, setProjects] = useState([]);
+
+  const workspace = useSelector((state) => state.workspace);
+
+  useEffect(() => {
+    setPageLoading(true);
+    axios.get(`/api/projects/${workspace?._id}/completed`).then((response) => {
+      setProjects(response.data.projects);
+      setPageLoading(false);
+    });
+  }, [workspace]);
   return (
     <>
       <Box
@@ -123,7 +70,7 @@ export default function Completed() {
               xs={12}
               key={index}
               onClick={() => {
-                navigate("1");
+                navigate(item._id);
               }}
             >
               <Box
@@ -140,7 +87,7 @@ export default function Completed() {
               >
                 <Stack direction="row" justifyContent="space-between">
                   <Text fw="500" fs="18px" color="#1a1a1a">
-                    Project Alpha
+                    {item.name}
                   </Text>
                   <IconButton onClick={(event) => handleClick(event, index)}>
                     <MoreVert />
@@ -166,7 +113,7 @@ export default function Completed() {
                         color="#1a1a1a"
                         sx={{ cursor: "pointer" }}
                         onClick={() => {
-                          navigate("1");
+                          navigate(item._id);
                         }}
                       >
                         Open
@@ -185,10 +132,10 @@ export default function Completed() {
                 </Stack>
                 <Box>
                   <Text fw="500" fs="12px" color="#1a1a1a">
-                    Project Owner: {item.owner}
+                    Project Owner: {item.owner.fullName}
                   </Text>
                   <Text fw="500" fs="12px" color="#1a1a1a">
-                    Project Manager: {item.manager}
+                    Project Manager: {item?.manager}
                   </Text>
                 </Box>
                 <Box my={2}>
@@ -198,7 +145,7 @@ export default function Completed() {
                         Start Date
                       </Text>
                       <Text fw="500" fs="14px" color="#1a1a1a">
-                        {item.startDate}
+                        {moment(item.startDate).format("MMM Do YYYY")}
                       </Text>
                     </Box>
                     <Box>
@@ -206,48 +153,47 @@ export default function Completed() {
                         End Date
                       </Text>
                       <Text fw="500" fs="14px" color="#1a1a1a">
-                        {item.endDate}
+                        {moment(item.endDate).format("MMM Do YYYY")}
                       </Text>
                     </Box>
                   </Stack>
                 </Box>
-                <Box bgcolor="#E5FFE0" borderRadius="4px" px="4px" py="10px" width="73px" display="flex" justifyContent="center" alignItems="space-between">
+                <Box
+                  bgcolor="#E5FFE0"
+                  borderRadius="4px"
+                  px="4px"
+                  py="10px"
+                  width="73px"
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="space-between"
+                >
                   <Text fw="500" fs="10px" color="#18A800">
                     Completed
                   </Text>
                 </Box>
                 <Box my={1}>
                   <Text fw="500" fs="12px" color="#1a1a1a">
-                    {`${item.members.length} Team Members`}
+                    {`${item.team.length} Team Members`}
                   </Text>
                   <Box display="flex" mt="2px">
                     <AvatarGroup alignItems="flex-start">
-                      <Avatar
-                        sx={{ width: "24px", height: "24px" }}
-                        alt="Remy Sharp"
-                        src="/static/images/avatar/1.jpg"
-                      />
-                      <Avatar
-                        sx={{ width: "24px", height: "24px" }}
-                        alt="Travis Howard"
-                        src="/static/images/avatar/2.jpg"
-                      />
-                      <Avatar
-                        sx={{ width: "24px", height: "24px" }}
-                        alt="Agnes Walker"
-                        src="/static/images/avatar/4.jpg"
-                      />
-                      <Avatar
-                        sx={{ width: "24px", height: "24px" }}
-                        alt="Trevor Henderson"
-                        src="/static/images/avatar/5.jpg"
-                      />
+                      {item.team.map((member) => (
+                        <Avatar
+                          key={member?._id}
+                          sx={{ width: "24px", height: "24px" }}
+                          alt={member?.fullName || member?.userEmail}
+                          src="/static/images/avatar/1.jpg"
+                        />
+                      ))}
                     </AvatarGroup>
                   </Box>
                 </Box>
                 <Box>
-                  <Text fw="500" fs="10px" color="#1a1a1a">
-                    {`Marked Complete By ${item.updatedBy}: ${item.updatedAt}`}
+                  <Text fw="500" fs="10px" color="#1a1a1a"> 
+                    {`Marked Complete By ${item.updatedBy ?? ""}: ${moment(
+                      item.updatedAt
+                    ).format("MMM Do YYYY")}`}
                   </Text>
                 </Box>
               </Box>

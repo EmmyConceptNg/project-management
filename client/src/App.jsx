@@ -1,13 +1,15 @@
-import { ProjectManagerRoutes } from "./routes/ProjectManagerRoutes";
+import { ToastContainer } from "react-toastify";
+import { AppRoutes } from "./routes/AppRoutes";
 import { Router } from "./routes/routes";
-import { StakeholdersRoutes } from "./routes/StakeholdersRoutes";
+import { WorkspaceRoutes } from "./routes/WorkspaceRoutes";
 
 function App() {
   return (
     <>
+    <ToastContainer />
       <Router />
-      <StakeholdersRoutes />
-      <ProjectManagerRoutes />
+      <AppRoutes />
+      <WorkspaceRoutes />
     </>
   );
 }

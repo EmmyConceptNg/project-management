@@ -40,21 +40,20 @@ export default function Login() {
   };
 
   const handleLogin = (e) => {
+    dispatch({ type: "LOGOUT" });
     e.preventDefault();
     setLoginBtn(true);
-    navigate('/dashboard')
-
     axios
-      .post("/api/auth/login", payload, {
+      .post("/api/user/login", payload, {
         headers: { "Content-Type": "application/json" },
       })
       .then((response) => {
+        console.log(response.data.user);
         dispatch({ type: "SET_USER", payload: response.data.user });
-        if (response.data.user.role === "admin") {
-          navigate("/admin");
-        } else {
+        dispatch({ type: "SET_WORKSPACE", payload: response.data.workspace });
+        
           navigate("/dashboard");
-        }
+        
       })
       .catch((error) => {
         notify(error?.response?.data?.error, "error");
@@ -163,10 +162,7 @@ export default function Login() {
               </Box>
 
               <Divider>
-                <Text
-                  fw="500"
-                  fs="15px"
-                >
+                <Text fw="500" fs="15px">
                   OR
                 </Text>
               </Divider>
@@ -202,9 +198,7 @@ export default function Login() {
                 </Box>
               </Box>
               <Box display="flex" justifyContent={"center"}>
-                <Text sx={{ textAlign: "center" }}>
-                  Don't have an account?
-                </Text>
+                <Text sx={{ textAlign: "center" }}>Don't have an account?</Text>
                 <Text
                   onClick={() => navigate("/")}
                   sx={{
@@ -226,13 +220,32 @@ export default function Login() {
           lg={6}
           xs={12}
           sm={12}
-          sx={{ display: { md: "block", sm: "none", xs: "none" } }}
+          sx={{
+            display: { md: "block", sm: "none", xs: "none" },
+            
+          }}
         >
           <Box
-            sx={{ ml: "auto", height : '100vh' }}
-            component="img"
-            src="assets/images/auth-image.svg"
-          />
+            sx={{
+              height: "100vh",
+              width: "100%",
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            <Box component="img"
+              src="assets/images/auth-image.svg"
+              alt="Authentication"
+              sx={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+              }}
+            />
+          </Box>
         </Grid>
       </Grid>
     </Box>

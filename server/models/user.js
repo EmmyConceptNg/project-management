@@ -4,12 +4,17 @@ import bcrypt from "bcrypt";
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
+  fullName: String,
+  industry: String,
+  timeZone : String,
+  phone : String,
   email: {
     type: String,
     required: true,
     unique: true,
     match: [/.+\@.+\..+/, "Please fill a valid email address"],
   },
+   
   password: {
     type: String,
     required: true,

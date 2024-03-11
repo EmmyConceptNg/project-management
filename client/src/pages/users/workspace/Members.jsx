@@ -2,6 +2,7 @@ import {
   Avatar,
   AvatarGroup,
   Box,
+  Button,
   Container,
   Divider,
   FormControl,
@@ -25,14 +26,23 @@ import {
   TableRow,
 } from "@mui/material";
 
-import { ArrowBackIos, Delete, Folder, MoreVert } from "@mui/icons-material";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {
+  Add,
+  ArrowBackIos,
+  Delete,
+  Folder,
+  MoreVert,
+} from "@mui/icons-material";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Icon } from "@iconify/react";
-import Text from "../../../../components/utils/Text";
-import TableLoader from "../../../../components/utils/TableLoader";
+import Text from "../../../components/utils/Text";
+import TableLoader from "../../../components/utils/TableLoader";
+import { useSelector } from "react-redux";
+import axios from "../../../api/axios";
+import InviteWorkspaceModal from "../../../components/projectManagers/InviteWorkspaceModal";
 
-export default function TaskMembers() {
+export default function WorkspaceMembers() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(null);
 
@@ -51,56 +61,31 @@ export default function TaskMembers() {
 
   const navigate = useNavigate();
 
-
   const [loading, setLoading] = useState(false);
-  const [tasks, setTasks] = useState([
-    {
-      teamMember: "Rhiannon Silva",
-      role: "Team Member",
-      timeZone: "EST",
-      contactNumber: "+1 309 1234 567",
-      email: "rihannons@gmail.com",
-      projectSpecialityClass: "Contributor",
-      reminderPreference: "email",
-    },
-    {
-      teamMember: "Hayden Kirby",
-      role: "Team Member & Stakeholder",
-      timeZone: "EST",
-      contactNumber: "+1 309 1234 567",
-      email: "haydenkirby@gmail.com",
-      projectSpecialityClass: "Milestone Owner",
-      reminderPreference: "text",
-    },
-    {
-      teamMember: "Hayden Kirby",
-      role: "Team Member & Stakeholder",
-      timeZone: "EST",
-      contactNumber: "+1 309 1234 567",
-      email: "haydenkirby@gmail.com",
-      projectSpecialityClass: "Milestone Owner",
-      reminderPreference: "text_email",
-    },
-    {
-      teamMember: "Hayden Kirby",
-      role: "Stakeholder",
-      timeZone: "EST",
-      contactNumber: "+1 309 1234 567",
-      email: "haydenkirby@gmail.com",
-      projectSpecialityClass: "Milestone Owner",
-      reminderPreference: "text",
-    },
-    {
-      teamMember: "Hayden Kirby",
-      role: "PM/Admin",
-      timeZone: "EST",
-      contactNumber: "+1 309 1234 567",
-      email: "haydenkirby@gmail.com",
-      projectSpecialityClass: "Milestone Owner",
-      reminderPreference: "text_email",
-    },
-  ]);
+  const [workspace, setWorkspace] = useState({});
+  const [team, setTeam] = useState([]);
+ const [openInvite, setOpenInvite] = useState(false)
+  const {workspaceId} = useParams()
+  
 
+const refresh = () =>{
+    getWorkspace()
+}
+
+  const getWorkspace = () =>{
+    axios
+      .get(`/api/workspace/get-workspace/${workspaceId}`)
+      .then((response) => {
+        setWorkspace(response.data.workspace);
+        setTeam(response.data.team);
+        setLoading(false);
+      });
+  }
+
+  useEffect(() => {
+    setLoading(true)
+    getWorkspace()
+  }, [workspaceId]);
 
   return (
     <>
@@ -114,22 +99,21 @@ export default function TaskMembers() {
           <IconButton sx={{ my: "auto" }} onClick={() => navigate(-1)}>
             <ArrowBackIos sx={{ color: "#1A1A1A" }} />
           </IconButton>
-          <Text fw="600" fs="22px">
-            Ongoing Projects
+          <Text fw="600" fs="22px" sx={{ textTransform: "capitalize" }}>
+            {`${workspace?.name} members`}
           </Text>
         </Box>
       </Box>
-      <Box
-        my={3}
-        borderBottom="1px solid #D9D9D9 "
-        display="flex"
-        alignItems="center"
-      >
-        <Box mb={3} ml={7}>
-          <Text fw="600" fs="22px">
-            {`Project Alpha > Project Details`}
-          </Text>
-        </Box>
+
+      <Box mb={3} display="flex" justifyContent="flex-end">
+        <Button
+          onClick={() => setOpenInvite(true)}
+          variant="contained"
+          startIcon={<Add />}
+          sx={{ borderRadius: "10px" }}
+        >
+          Add Team Member
+        </Button>
       </Box>
 
       <Box>
@@ -155,12 +139,13 @@ export default function TaskMembers() {
                   {[
                     "ID",
                     "Team Member",
-                    "Role",
+
                     "Time Zone",
                     "Contact Number",
                     "Email",
                     "Project Speciality Class",
-                    "Reminder Preference",
+
+                    "Status",
                   ].map((table, _index) => (
                     <TableCell
                       sx={{
@@ -191,15 +176,15 @@ export default function TaskMembers() {
                             ))}
                         </TableRow>
                       ))
-                  : tasks.map((task, index) => (
-                      <TableRow 
-                        key={task._id}
+                  : team?.map((_team, index) => (
+                      <TableRow
+                        key={_team?._id}
                         sx={{
                           "&:last-child td, &:last-child th": {
                             border: 0,
                           },
                           cursor: "pointer",
-                          '&:hover' : {backgroundColor : '#F5F5F5'}
+                          "&:hover": { backgroundColor: "#F5F5F5" },
                         }}
                       >
                         <TableCell
@@ -220,57 +205,7 @@ export default function TaskMembers() {
                             whiteSpace: "nowrap",
                           }}
                         >
-                          {task.teamMember}
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            fontSize: "16px",
-                            fontWeight: "400",
-                            color: "#262626",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          {task.role}
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            fontSize: "16px",
-                            fontWeight: "400",
-                            color: "#262626",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          {task.timeZone}
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            fontSize: "16px",
-                            fontWeight: "400",
-                            color: "#262626",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          {task.contactNumber}
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            fontSize: "16px",
-                            fontWeight: "400",
-                            color: "#262626",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          {task.email}
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            fontSize: "16px",
-                            fontWeight: "400",
-                            color: "#262626",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          {task.projectSpecialityClass}
+                          {_team?.teamMember ?? '-'}
                         </TableCell>
 
                         <TableCell
@@ -281,21 +216,67 @@ export default function TaskMembers() {
                             whiteSpace: "nowrap",
                           }}
                         >
-                          <FormControl fullWidth>
-                            <Select
-                              sx={{ backgroundColor: "#F5F5F5", border: 'none' }}
-                              size="small"
-                              labelId="demo-simple-select-label"
-                              id="demo-simple-select"
-                              value={task.reminderPreference}
-                            >
-                              <MenuItem value="email">Email</MenuItem>
-                              <MenuItem value="text">Text</MenuItem>
-                              <MenuItem value="text_email">
-                                Email & Text
-                              </MenuItem>
-                            </Select>
-                          </FormControl>
+                          {_team?.timeZone ?? '-'}
+                        </TableCell>
+                        <TableCell
+                          sx={{
+                            fontSize: "16px",
+                            fontWeight: "400",
+                            color: "#262626",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {_team?.contactNumber ?? '-'}
+                        </TableCell>
+                        <TableCell
+                          sx={{
+                            fontSize: "16px",
+                            fontWeight: "400",
+                            color: "#262626",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {_team?.email}
+                        </TableCell>
+                        <TableCell
+                          sx={{
+                            fontSize: "16px",
+                            fontWeight: "400",
+                            color: "#262626",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {_team?.projectSpecialityClass ?? '-'}
+                        </TableCell>
+
+                        <TableCell
+                          sx={{
+                            fontSize: "16px",
+                            fontWeight: "400",
+                            color: "#262626",
+                            whiteSpace: "nowrap",
+                            textAlign: "center",
+                          }}
+                        >
+                          <Box
+                            sx={{
+                              backgroundColor:
+                                _team.status === "pending"
+                                  ? "#FFF3F3"
+                                  : "#E9FFE5",
+                              color:
+                                _team.status === "accepted"
+                                  ? "#18A800"
+                                  : "#D00000 ",
+                              border: "none",
+                              outline: "none",
+                              borderRadius: "10px",
+                              padding: 1,
+                            }}
+                          >
+
+                          {_team?.status}
+                          </Box>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -304,19 +285,24 @@ export default function TaskMembers() {
           </TableContainer>
 
           <Box mt={3}>
-            {!loading && !tasks?.length > 0 && (
+            {!loading && !team?.length > 0 && (
               <Text
                 fw="600"
                 fs="16px"
                 color="#000"
                 sx={{ textAlign: "center" }}
               >
-                No Subscription Available
+                No members in this workspace
               </Text>
             )}
           </Box>
         </Box>
       </Box>
+      <InviteWorkspaceModal
+        open={openInvite}
+        setOpen={setOpenInvite}
+        refresh={refresh}
+      />
     </>
   );
 }

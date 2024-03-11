@@ -5,6 +5,7 @@ import Text from "../../components/utils/Text";
 import { EditOutlined, Logout, PersonAdd, PersonOutlined, Settings } from "@mui/icons-material";
 import Caret from "../../components/layout/Caret";
 import Notification from "../../components/layout/Notification";
+import { useSelector } from "react-redux";
 
 export default function Nav(){
     const [anchorEl, setAnchorEl] = useState(null);
@@ -12,16 +13,16 @@ export default function Nav(){
     const handleClick = (event) => {
       setAnchorEl(event.currentTarget);
     };
+    const user = useSelector((state) => state.user);
     const handleClose = () => {
       setAnchorEl(null);
     };
     return (
       <>
-        <Box display={{  xs: "none", sm: 'flex' }} alignItems="center">
+        <Box display={{ xs: "none", sm: "flex" }} alignItems="center">
           <Notification />
-          <Box display="flex" alignItems="center" >
+          <Box display="flex" alignItems="center">
             <IconButton
-             
               size="small"
               sx={{ ml: 2 }}
               aria-controls={open ? "account-menu" : undefined}
@@ -33,9 +34,8 @@ export default function Nav(){
                 sx={{ width: "40px", height: "40px" }}
               />
             </IconButton>
-            
+
             <Caret />
-            
           </Box>
         </Box>
         <Menu
@@ -80,7 +80,7 @@ export default function Nav(){
                 Stakeholder
               </Text>
               <Text ml={2} fw="600" fs="24px" color="#1A1A1A">
-                John Doe
+                {user?.fullName ?? ""}
               </Text>
             </Box>
           </MenuItem>

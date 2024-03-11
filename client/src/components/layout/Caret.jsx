@@ -21,10 +21,13 @@ import {
   PersonOutlined,
   Settings,
 } from "@mui/icons-material";
+import { useSelector } from "react-redux";
 
 export default function Caret() {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const user = useSelector(state => state.user)
+  const workspace = useSelector(state => state.workspace)
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -33,7 +36,7 @@ export default function Caret() {
   };
   return (
     <>
-      <Box display={{  xs: "none", sm:'flex' }} alignItems="center">
+      <Box display={{ xs: "none", sm: "flex" }} alignItems="center">
         <IconButton
           onClick={handleClick}
           size="small"
@@ -43,7 +46,7 @@ export default function Caret() {
         >
           <Box display="flex" alignItems="center">
             <Text ml={2} fw="500" fs="16px" color="#1A1A1A">
-              John Doe
+              {user?.fullName ?? ""}
             </Text>
             <Icon
               icon="ri:arrow-drop-down-line"
@@ -104,8 +107,9 @@ export default function Caret() {
                   required
                   id="fullname"
                   type="text"
-                  name="fullname" readOnly
-                  value={'John Doe'}
+                  name="fullname"
+                  readOnly
+                  value={user?.fullName ?? ""}
                 />
               </FormControl>
             </Box>
@@ -113,7 +117,7 @@ export default function Caret() {
               <FormControl variant="outlined" sx={{ width: "100%" }}>
                 <label htmlFor="password" style={{ marginBottom: "10px" }}>
                   <Text fw="500" fs="16px" ml={5}>
-                    Your Role
+                    Current Workspace
                   </Text>
                 </label>
                 <OutlinedInput
@@ -121,8 +125,9 @@ export default function Caret() {
                   required
                   id="fullname"
                   type="text"
-                  name="fullname" readOnly
-                  value={'Owner of the Project - Stackeholder'}
+                  name="fullname"
+                  readOnly
+                  value={workspace?.name}
                 />
               </FormControl>
             </Box>
@@ -138,8 +143,9 @@ export default function Caret() {
                   required
                   id="fullname"
                   type="text"
-                  name="fullname" readOnly
-                  value={'Information Technology'}
+                  name="fullname"
+                  readOnly
+                  value={workspace?.industry}
                 />
               </FormControl>
             </Box>
