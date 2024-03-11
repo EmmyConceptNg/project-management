@@ -19,7 +19,7 @@ import Notification from "../pages/users/Notification";
 
 import AddTask from "../pages/users/projects/ongoing/AddTask";
 import EditTask from "../pages/users/projects/ongoing/EditTask";
-import CreateProject from "../pages/users/projects/createProject";
+import CreateProject from "../pages/users/projects/CreateProject";
 
 export const AppRoutes = () => {
   const routes = useRoutes([
