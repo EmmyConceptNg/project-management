@@ -37,7 +37,7 @@ export const Sidebar = () => {
         <Box display="flex" mt={2}>
           <Box
             component="img"
-            src="/public/assets/images/logo.svg"
+            src="assets/images/logo.svg"
             width="184.38px"
             sx={{ mx: "auto" }}
           />
