@@ -12,7 +12,7 @@ import { MenuItems } from "./MenuItems";
 import { useNavigate, useLocation } from "react-router-dom";
 import Text from "../../components/utils/Text";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import CreateProjectModal from "../../components/modal/createProjectModal";
+import CreateProjectModal from "../../components/modal/CreateProjectModal";
 import Workspace from "../../components/layout/Workspace";
 
 export const Sidebar = () => {
