@@ -21,7 +21,7 @@ import InviteModal from "../../../../components/projectManagers/InviteModal";
 import axios from "../../../../api/axios";
 import { useSelector } from "react-redux";
 import moment from "moment";
-import CreateProjectModal from "../../../../components/modal/createProjectModal";
+import CreateProjectModal from "../../../../components/modal/CreateProjectModal";
 import ProjectLoader from "../../../../components/utils/ProjectLoader";
 
 export default function Ongoing() {
