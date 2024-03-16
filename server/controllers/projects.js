@@ -12,7 +12,6 @@ export const index = (req, res) => {
 
   Project.find({ workspaceId: workspaceId, status })
     .populate("team.userId")
-    .populate("team.roleId")
     .populate("owner", "fullName")
     .then((projects) => res.status(200).json({ projects }))
     .catch((error) => res.status(400).json({ error: error.message }));
