@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const Project = mongoose.Schema(
   {
     name: String,
-    description : String,
+    description: String,
     owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     workspaceId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -15,9 +15,9 @@ const Project = mongoose.Schema(
           type: mongoose.Schema.Types.ObjectId,
           ref: "User",
         },
-        roleId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Role",
+        role: {
+          type : String,
+          defualt : 'team member',
         },
       },
     ],
@@ -30,6 +30,12 @@ const Project = mongoose.Schema(
       enum: ["pending", "ongoing", "completed", "archived"],
       default: "ongoing",
     },
+    task: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Task",
+      },
+    ],
   },
   { timestamps: true }
 );

@@ -20,6 +20,7 @@ const invitationSchema = new mongoose.Schema(
       enum: ["pending", "accepted", "declined"],
       default: "pending",
     },
+    url: String,
   },
   { timestamps: true }
 );

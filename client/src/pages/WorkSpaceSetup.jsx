@@ -107,7 +107,7 @@ export default function WorkSpaceSetup() {
                 {" "}
                 <Box
                   component="img"
-                  src="assets/icons/add-image.svg"
+                  src="/assets/icons/add-image.svg"
                   sx={{ width: "114px", height: "114px", mx: "auto" }}
                 />
               </Box>
@@ -219,15 +219,26 @@ export default function WorkSpaceSetup() {
                   </Box>
                 ))}
               </Box>
-              <LoadingButton
-                loading={nextBtn}
-                variant="contained"
-                color="primary"
-                type="submit"
-                sx={{ textTransform: "capitalize" }}
-              >
-                Next
-              </LoadingButton>
+              <Stack direction="row" spacing={2} justifyContent="space-between">
+                <Button fullWidth 
+                onClick={() => navigate('/profile')}
+                  variant="outlined"
+                  color="primary"
+                  type="button"
+                  sx={{ textTransform: "capitalize", height: '50px' }}
+                >
+                  Skip
+                </Button>
+                <LoadingButton fullWidth 
+                  loading={nextBtn}
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  sx={{ textTransform: "capitalize", height: '50px' }}
+                >
+                  Next
+                </LoadingButton>
+              </Stack>
             </Stack>
           </Stack>
         </Box>

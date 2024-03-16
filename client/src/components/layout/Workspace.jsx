@@ -41,16 +41,31 @@ export default function Workspace() {
   };
   const [workspaces, setWorkspaces] = useState([]);
   useEffect(() => {
+    fetchWorkspace();
+  }, [user, workspace]);
+
+  const fetchWorkspace =() =>{
     axios.get(`/api/workspace/${user._id}`).then((response) => {
       const filteredWorkspaces = response.data.workspaces.filter(
         (_w) => _w._id !== workspace._id
       );
       setWorkspaces(filteredWorkspaces);
     });
-  }, [user, workspace]);
-
+  }
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+
+
+  const handleSwitchWorkspace = (id) =>{
+
+  fetchWorkspace()
+    const theWorkspace = workspaces.find(workspace => workspace._id === id);
+     dispatch({
+       type: "SET_WORKSPACE",
+       payload: theWorkspace,
+     });
+  }
   return (
     <Box mx="auto">
       <Box display="flex" mx="auto" alignItems="center">
@@ -113,7 +128,7 @@ export default function Workspace() {
                 {workspace?.name}
               </Text>
               <Text fw="500" fs="16px" ml={5}>
-                {workspace?.team.length} members
+                {workspace?.team?.length} members
               </Text>
             </Box>
 
@@ -155,10 +170,7 @@ export default function Workspace() {
                     <Box key={workspace._id}>
                       <Button
                         onClick={() => {
-                          dispatch({
-                            type: "SET_WORKSPACE",
-                            payload: workspace,
-                          });
+                         handleSwitchWorkspace(workspace._id)
                         }}
                         sx={{
                           textTransform: "capitalize",
@@ -184,7 +196,7 @@ export default function Workspace() {
                           ml={5}
                           sx={{ cursor: "pointer" }}
                         >
-                          {workspace?.team.length} members
+                          {workspace?.team?.length} members
                         </Text>
                       </Button>
                       {index !== workspaces.length - 1 && (

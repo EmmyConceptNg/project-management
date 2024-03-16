@@ -11,6 +11,7 @@ import settingsRoutes from "./routes/settings.js";
 import userRoutes from "./routes/user.js";
 import rolesRoutes from "./routes/roles.js";
 import workspaceRoutes from "./routes/workspace.js";
+import tasksRoutes from "./routes/tasks.js";
 
 /* CONFIGURATION */
 dotenv.config();
@@ -30,6 +31,7 @@ app.use("/api/settings", settingsRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/roles", rolesRoutes);
 app.use("/api/workspace", workspaceRoutes);
+app.use("/api/tasks", tasksRoutes);
 
 
 /* MONGOOSE SETUP */

@@ -209,7 +209,7 @@ export default function CreateProjectModal({ open, setOpen, setRefresh }) {
               <FormControl>
                 <label htmlFor="team" style={{ marginBottom: "10px" }}>
                   <Text fw="500" fs="16px" ml={5}>
-                    Add Team Members
+                    Add Team Members from Workspace
                   </Text>
                 </label>
                 <Select
@@ -221,9 +221,9 @@ export default function CreateProjectModal({ open, setOpen, setRefresh }) {
                   value={payload.team}
                   onChange={handleChange}
                 >
-                  {workspace?.team.map((email, index) => (
-                    <MenuItem key={index} value={email}>
-                      {email}
+                  {workspace?.team?.filter((_team) => _team?.userId?._id !== user?._id)?.map((user, index) =>(
+                    <MenuItem key={index} value={user?.userId?._id}>
+                      {user?.userId?.email}
                     </MenuItem>
                   ))}
                 </Select>

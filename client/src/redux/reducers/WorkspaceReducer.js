@@ -7,6 +7,8 @@ const WorkspaceReducer = (state = initialState, action) => {
         ...state,
         ...action.payload,
       };
+    case "REMOVE_WORKSPACE":
+      return initialState;
     default:
       return state;
   }

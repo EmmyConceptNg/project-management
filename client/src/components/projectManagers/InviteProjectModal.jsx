@@ -33,7 +33,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     padding: theme.spacing(1),
   },
 }));
-export default function InviteWorkspaceModal({ open, setOpen, refresh }) {
+export default function InviteProjecteModal({ open, setOpen, refresh, project }) {
   const handleClose = () => setOpen(false);
   const navigate = useNavigate();
 
@@ -126,51 +126,32 @@ export default function InviteWorkspaceModal({ open, setOpen, refresh }) {
         <DialogContent dividers>
           <Box component="form" onSubmit={inviteWorkspace}>
             <FormControl variant="outlined" sx={{ width: "100%" }}>
-              <label htmlFor="name" style={{ marginBottom: "15px" }}>
+              <label
+                htmlFor="team"
+                style={{
+                  marginBottom: "15px",
+                }}
+              >
                 <Text fw="500" fs="16px" ml={5} color="#1A1A1A">
-                  Invite Team Member
+                  Assign Task
                 </Text>
               </label>
-              <Stack direction="row" spacing={1}>
-                <OutlinedInput
-                  fullWidth
-                  id="name"
-                  type="email"
-                  name="email"
-                  value={payload.email}
-                  onChange={handleChange}
-                />
-                <Button variant="outlined" onClick={handleAddEmail}>
-                  Add
-                </Button>
-              </Stack>
+              <Select
+                labelId="team"
+                fullWidth
+                name="team"
+                value={payload.team}
+                onChange={handleChange}
+              >
+                {project?.team
+                  // ?.filter((_team) => _team?.userId?._id !== user?._id)
+                  ?.map((_user, index) => (
+                    <MenuItem key={index} value={_user?.userId?._id}>
+                      {_user?.userId?.fullName}
+                    </MenuItem>
+                  ))}
+              </Select>
             </FormControl>
-            <Box display="flex" flexWrap="wrap" gap={1}>
-              {emails.map((email, index) => (
-                <Box
-                  key={index}
-                  sx={{
-                    bgcolor: "#F2F2F2",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    px: 1,
-                    borderRadius: "10px",
-                  }}
-                >
-                  <Text sx={{ my: "auto" }}>{email}</Text>
-                  <Button
-                    sx={{ my: "auto" }}
-                    variant="text"
-                    color="error"
-                    size="small"
-                    onClick={() => handleRemoveEmail(email)}
-                  >
-                    X
-                  </Button>
-                </Box>
-              ))}
-            </Box>
 
             <Box display="flex">
               <LoadingButton

@@ -14,6 +14,7 @@ import Text from "../../components/utils/Text";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import CreateProjectModal from "../../components/modal/CreateProjectModal";
 import Workspace from "../../components/layout/Workspace";
+import { useSelector } from "react-redux";
 
 export const Sidebar = () => {
   const [open, setOpen] = useState(true);
@@ -30,6 +31,7 @@ export const Sidebar = () => {
    }
  };
 
+ const workspace = useSelector((state) => state.workspace);
 
   return (
     <>
@@ -37,16 +39,23 @@ export const Sidebar = () => {
         <Box display="flex" mt={2}>
           <Box
             component="img"
-            src="assets/images/logo.svg"
+            src="/assets/images/logo.svg"
             width="184.38px"
             sx={{ mx: "auto" }}
           />
         </Box>
 
         <Box mt={5}>
-          <Box display="flex" p={1.5} justifyContent={"center"} bgcolor="#1166EA" >
-            <Workspace />
-          </Box>
+          {workspace && Object.keys(workspace).length > 0 && (
+            <Box
+              display="flex"
+              p={1.5}
+              justifyContent={"center"}
+              bgcolor="#1166EA"
+            >
+              <Workspace />
+            </Box>
+          )}
           {MenuItems.map((item) => (
             <Box key={item.id}>
               <ListItemButton

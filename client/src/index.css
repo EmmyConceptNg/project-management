@@ -21,3 +21,11 @@ body{
 .css-jd1zyo-MuiSelect-select-MuiInputBase-input-MuiInput-input.css-jd1zyo-MuiSelect-select-MuiInputBase-input-MuiInput-input.css-jd1zyo-MuiSelect-select-MuiInputBase-input-MuiInput-input{
     padding: 5px;
 }
+.react-international-phone-input-container .react-international-phone-input{
+  width: 100%;
+  height : 50px;
+}
+.react-international-phone-input-container .react-international-phone-country-selector-button {
+height : 50px;
+
+}

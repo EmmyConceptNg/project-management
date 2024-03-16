@@ -1,55 +1,108 @@
-import { Avatar, AvatarGroup, Box, Button, Container, Divider, FormControl, Grid, IconButton, LinearProgress, List, ListItem, ListItemAvatar, ListItemText, MenuItem, OutlinedInput, Popover, Select, Stack } from '@mui/material'
-import Text from '../../../../components/utils/Text';
-import { ArrowBackIos, Delete, Folder, MoreVert } from '@mui/icons-material';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Icon } from '@iconify/react';
+import {
+  Avatar,
+  AvatarGroup,
+  Box,
+  Button,
+  Container,
+  Divider,
+  FormControl,
+  Grid,
+  IconButton,
+  LinearProgress,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  MenuItem,
+  OutlinedInput,
+  Popover,
+  Select,
+  Stack,
+} from "@mui/material";
+import Text from "../../../../components/utils/Text";
+import { ArrowBackIos, Delete, Folder, MoreVert } from "@mui/icons-material";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { Icon } from "@iconify/react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "ckeditor5-build-classic-mathtype";
-   
+import axios from "../../../../api/axios";
+import { useSelector } from "react-redux";
+import { notify } from "../../../../utils/utils";
+import { LoadingButton } from "@mui/lab";
+import { ToastContainer } from "react-toastify";
+
 export default function AddTask() {
   const today = new Date().toISOString().split("T")[0];
-   const [anchorEl, setAnchorEl] = useState(null);
-   const [selectedIndex, setSelectedIndex] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedIndex, setSelectedIndex] = useState(null);
 
-   const handleClick = (event, index) => {
-     setAnchorEl(event.currentTarget);
-     setSelectedIndex(index);
-   };
+  const handleClick = (event, index) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedIndex(index);
+  };
 
-   const handleClose = () => {
-     setAnchorEl(null);
-     setSelectedIndex(null);
-   };
+  const handleClose = () => {
+    setAnchorEl(null);
+    setSelectedIndex(null);
+  };
 
-   const open = Boolean(anchorEl);
-   const id = open ? "simple-popover" : undefined;
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+  const [project, setProject] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const user = useSelector((state) => state.user);
+  const { projectId } = useParams();
+const [creatingTask, setCreatingTask] = useState(false);
+  const navigate = useNavigate();
 
-   const navigate = useNavigate()
-   
+  const [payload, setPayload] = useState({
+    title: "",
+    startDate: "",
+    endDate: "",
+    team: "",
+    description: "",
+  });
 
-   const [payload, setPayload] = useState({
-    title : '',
-    startDate: '',
-    endDate : '',
-    projectName : '',
-    projectOwner : '',
-    team : [],
-    status : '',
-    description : ''
-   })
+  useEffect(() => {
+    setLoading(true);
+    axios
+      .get(`/api/projects/${projectId}/${user?._id}/ongoing`)
+      .then((response) => {
+        setProject(response.data.project);
+        setLoading(false);
+      });
+  }, []);
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setPayload({ ...payload, [name]: value });
+  };
+  const handleDescriptionChange = (data) => {
+    setPayload({ ...payload, description: data });
+  };
 
-   const handleChange=(e)=>{
-    const {name, value} = e.target
-    setPayload({...payload, [name] : value});
-   }
-const handleDescriptionChange =(data)=>{
-  setPayload({...payload, description : data});
-}
- 
+  const handleAddTask = (e) => {
+    e.preventDefault()
+    setCreatingTask(true)
+
+    const updatedPayload = { ...payload, projectId };
+    axios
+      .post("/api/tasks/create", updatedPayload)
+      .then((response) => {
+        navigate(`/dashboard/projects/ongoing/${project?._id}/breakdown`);
+        notify(response.data.message, "success");
+        setCreatingTask(false);
+      })
+      .catch((err) => {
+        setCreatingTask(false);
+        notify(err?.response?.data?.error, "error");
+      });
+  };
+
   return (
     <>
+    <ToastContainer />
       <Box
         borderBottom="1px solid #D9D9D9 "
         mb={3}
@@ -66,9 +119,9 @@ const handleDescriptionChange =(data)=>{
         </Box>
       </Box>
 
-      <Box>
+      <Box component="form" onSubmit={handleAddTask}>
         <Grid container spacing={{ md: 3, lg: 3, sm: 2, xs: 2 }}>
-          <Grid item md={12} lg={12} sm={12} xs={12}>
+          <Grid item md={6} lg={6} sm={12} xs={12}>
             <FormControl variant="outlined" sx={{ width: "100%" }}>
               <label
                 htmlFor="name"
@@ -145,107 +198,29 @@ const handleDescriptionChange =(data)=>{
           <Grid item md={6} lg={6} sm={12} xs={12}>
             <FormControl variant="outlined" sx={{ width: "100%" }}>
               <label
-                htmlFor="name"
-                style={{
-                  marginBottom: "15px",
-                }}
-              >
-                <Text fw="500" fs="16px" ml={5} color="#1A1A1A">
-                  Project Name
-                </Text>
-              </label>
-              <OutlinedInput
-                required
-                id="projectName"
-                type="text"
-                name="projectName"
-                value={payload.projectName}
-                onChange={handleChange}
-              />
-            </FormControl>
-          </Grid>
-          <Grid item md={6} lg={6} sm={12} xs={12}>
-            <FormControl variant="outlined" sx={{ width: "100%" }}>
-              <label
-                htmlFor="name"
-                style={{
-                  marginBottom: "15px",
-                }}
-              >
-                <Text fw="500" fs="16px" ml={5} color="#1A1A1A">
-                  Project Owner
-                </Text>
-              </label>
-              <OutlinedInput
-                required
-                id="projectOwner"
-                type="text"
-                name="projectOwner"
-                value={payload.projectOwner}
-                onChange={handleChange}
-              />
-            </FormControl>
-          </Grid>
-          <Grid item md={6} lg={6} sm={12} xs={12}>
-            <FormControl variant="outlined" sx={{ width: "100%" }}>
-              <label
                 htmlFor="team"
                 style={{
                   marginBottom: "15px",
                 }}
               >
                 <Text fw="500" fs="16px" ml={5} color="#1A1A1A">
-                  Add Team
+                  Assign Task
                 </Text>
               </label>
               <Select
                 labelId="team"
-                id="team"
+                fullWidth
+                name="team"
                 value={payload.team}
                 onChange={handleChange}
-                multiple
               >
-                <MenuItem value={10} sx={{ display:' flex', alignItems : 'center', gap : '10px' }}>
-                  <Avatar sx={{ height: "36px", width: "36px" }} />
-                  <Text fw="500" fs="16px">John Doe</Text>
-                </MenuItem>
-                  <Divider />
-                <MenuItem value={10} sx={{ display:' flex', alignItems : 'center', gap : '10px' }}>
-                  <Avatar sx={{ height: "36px", width: "36px" }} />
-                  <Text fw="500" fs="16px">John Doe</Text>
-                </MenuItem>
-                  <Divider />
-                <MenuItem value={10} sx={{ display:' flex', alignItems : 'center', gap : '10px' }}>
-                  <Avatar sx={{ height: "36px", width: "36px" }} />
-                  <Text fw="500" fs="16px">John Doe</Text>
-                </MenuItem>
-                  <Divider />
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item md={6} lg={6} sm={12} xs={12}>
-            <FormControl variant="outlined" sx={{ width: "100%" }}>
-              <label
-                htmlFor="status"
-                style={{
-                  marginBottom: "15px",
-                }}
-              >
-                <Text fw="500" fs="16px" ml={5} color="#1A1A1A">
-                  Task Status
-                </Text>
-              </label>
-              <Select
-                labelId="status"
-                id="status"
-                value={payload.status}
-                onChange={handleChange}
-              >
-                <MenuItem value={10}>Not Started</MenuItem>
-                <MenuItem value={10}>Completed</MenuItem>
-                <MenuItem value={10}>On-going</MenuItem>
-                <MenuItem value={10}>Completed</MenuItem>
-                
+                {project?.team
+                  // ?.filter((_team) => _team?.userId?._id !== user?._id)
+                  ?.map((_user, index) => (
+                    <MenuItem key={index} value={_user?.userId?._id}>
+                      {_user?.userId?.fullName}
+                    </MenuItem>
+                  ))}
               </Select>
             </FormControl>
           </Grid>
@@ -297,14 +272,14 @@ const handleDescriptionChange =(data)=>{
           >
             Cancel
           </Button>
-          <Button
+          <LoadingButton loading={creatingTask}
             sx={{ height: "44px", borderRadius: "10px" }}
             fullWidth
-            onClick={() => {}}
+            type="submit"
             variant="contained"
           >
             Create Task
-          </Button>
+          </LoadingButton>
         </Stack>
       </Box>
     </>

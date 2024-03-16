@@ -29,7 +29,7 @@ const userSchema = new Schema({
     required: true,
     default: false,
   },
-});
+},{timestamps: true});
 
 // // static signup method
 // userSchema.statics.signup = async function (email, password) {

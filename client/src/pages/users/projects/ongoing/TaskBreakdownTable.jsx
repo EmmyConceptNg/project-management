@@ -1,7 +1,23 @@
 import {
+  Avatar,
+  AvatarGroup,
   Box,
   Button,
+  Container,
+  Divider,
+  FormControl,
+  Grid,
   IconButton,
+  InputLabel,
+  LinearProgress,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  MenuItem,
+  Popover,
+  Select,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -10,21 +26,17 @@ import {
   TableRow,
 } from "@mui/material";
 
-import {
-  Add,
-  ArrowBackIos
-} from "@mui/icons-material";
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { ArrowBackIos, Delete, Folder, MoreVert } from "@mui/icons-material";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
-import Text from "../../../components/utils/Text";
-import TableLoader from "../../../components/utils/TableLoader";
-import { useSelector } from "react-redux";
-import axios from "../../../api/axios";
-import InviteWorkspaceModal from "../../../components/projectManagers/InviteWorkspaceModal";
-import userReducer from "../../../redux/reducers/userReducer";
+import Text from "../../../../components/utils/Text";
+import TableLoader from "../../../../components/utils/TableLoader";
+import moment from "moment";
+import parse from 'html-react-parser'
+import axios from "../../../../api/axios";
 
-export default function WorkspaceMembers() {
+export default function TaskBreakdownTable({ project, loading, fetchProject }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(null);
 
@@ -43,62 +55,18 @@ export default function WorkspaceMembers() {
 
   const navigate = useNavigate();
 
-  const [loading, setLoading] = useState(false);
-  const [workspace, setWorkspace] = useState({});
-  const [team, setTeam] = useState([]);
- const [openInvite, setOpenInvite] = useState(false)
-  const {workspaceId} = useParams()
-  
-const workS = useSelector(state => state.workspace)
-const user = useSelector(state => state.user)
-const refresh = () =>{
-    getWorkspace()
-}
-
-  const getWorkspace = () =>{
-    axios
-      .get(`/api/workspace/get-workspace/${workS._id}`)
-      .then((response) => {
-        setWorkspace(response.data.workspace);
-        setTeam(response.data.team);
-        setLoading(false);
-      });
-  }
-
-  useEffect(() => {
-    setLoading(true)
-    getWorkspace()
-  }, [workspaceId, workS]);
+  const handleTaskStatus = (e, taskId) => {
+    const payload = {
+      status: e.target.value,
+      taskId: taskId,
+    };
+    axios.post(`api/tasks/change-status`, payload).then(() => {
+      fetchProject();
+    });
+  };
 
   return (
     <>
-      <Box
-        borderBottom="1px solid #D9D9D9 "
-        mb={3}
-        display="flex"
-        alignItems="center"
-      >
-        <Box display={"flex"} gap={2} alignItems="center" sx={{ mb: "20px" }}>
-          <IconButton sx={{ my: "auto" }} onClick={() => navigate(-1)}>
-            <ArrowBackIos sx={{ color: "#1A1A1A" }} />
-          </IconButton>
-          <Text fw="600" fs="22px" sx={{ textTransform: "capitalize" }}>
-            {`${workspace?.name} members`}
-          </Text>
-        </Box>
-      </Box>
-
-      {workspace.userId === user._id &&<Box mb={3} display="flex" justifyContent="flex-end">
-        <Button
-          onClick={() => setOpenInvite(true)}
-          variant="contained"
-          startIcon={<Add />}
-          sx={{ borderRadius: "10px" }}
-        >
-          Add Team Member
-        </Button>
-      </Box>}
-
       <Box>
         <Box
           bgcolor="#fff"
@@ -121,14 +89,13 @@ const refresh = () =>{
                 <TableRow sx={{ background: "#F5F5F5" }}>
                   {[
                     "ID",
-                    "Team Member",
-
-                    "Time Zone",
-                    "Contact Number",
-                    "Email",
-                    "Project Speciality Class",
-
-                    "Status",
+                    "Task",
+                    "Sub-Task",
+                    "Owner",
+                    "Start Date",
+                    "End Date",
+                    "On / Off Track",
+                    "Notes",
                   ].map((table, _index) => (
                     <TableCell
                       sx={{
@@ -136,6 +103,7 @@ const refresh = () =>{
                         whiteSpace: "nowrap",
                         fontSize: "18px",
                         color: "#262626",
+                        textAlign: table === "Milestone" ? "left" : "center",
                       }}
                       key={_index}
                     >
@@ -144,6 +112,7 @@ const refresh = () =>{
                   ))}
                 </TableRow>
               </TableHead>
+
               <TableBody>
                 {loading
                   ? Array(4)
@@ -159,9 +128,9 @@ const refresh = () =>{
                             ))}
                         </TableRow>
                       ))
-                  : team?.map((_team, index) => (
+                  : project?.tasks?.map((task, index) => (
                       <TableRow
-                        key={_team?._id}
+                        key={task._id}
                         sx={{
                           "&:last-child td, &:last-child th": {
                             border: 0,
@@ -176,6 +145,7 @@ const refresh = () =>{
                             fontWeight: "400",
                             color: "#262626",
                             whiteSpace: "nowrap",
+                            textAlign: "center",
                           }}
                         >
                           {index + 1}
@@ -186,20 +156,10 @@ const refresh = () =>{
                             fontWeight: "400",
                             color: "#262626",
                             whiteSpace: "nowrap",
+                            textAlign: task.milestone ? "left" : "center",
                           }}
                         >
-                          {_team?.userId?.fullName ?? '-'}
-                        </TableCell>
-
-                        <TableCell
-                          sx={{
-                            fontSize: "16px",
-                            fontWeight: "400",
-                            color: "#262626",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          {_team?.userId?.timeZone ?? '-'}
+                          {task.name}
                         </TableCell>
                         <TableCell
                           sx={{
@@ -207,9 +167,10 @@ const refresh = () =>{
                             fontWeight: "400",
                             color: "#262626",
                             whiteSpace: "nowrap",
+                            textAlign: "center",
                           }}
                         >
-                          {_team?.userId?.phone ?? '-'}
+                          {task.subTask ?? "-"}
                         </TableCell>
                         <TableCell
                           sx={{
@@ -217,9 +178,10 @@ const refresh = () =>{
                             fontWeight: "400",
                             color: "#262626",
                             whiteSpace: "nowrap",
+                            textAlign: "center",
                           }}
                         >
-                          {_team?.userId?.email}
+                          {project?.owner?.fullName}
                         </TableCell>
                         <TableCell
                           sx={{
@@ -227,9 +189,21 @@ const refresh = () =>{
                             fontWeight: "400",
                             color: "#262626",
                             whiteSpace: "nowrap",
+                            textAlign: "center",
                           }}
                         >
-                          {_team?.specialityClass ?? '-'}
+                          {moment(task.startDate).format("MMM Do YYYY")}
+                        </TableCell>
+                        <TableCell
+                          sx={{
+                            fontSize: "16px",
+                            fontWeight: "400",
+                            color: "#262626",
+                            whiteSpace: "nowrap",
+                            textAlign: "center",
+                          }}
+                        >
+                          {moment(task.endDate).format("MMM Do YYYY")}
                         </TableCell>
 
                         <TableCell
@@ -241,25 +215,48 @@ const refresh = () =>{
                             textAlign: "center",
                           }}
                         >
-                          <Box
+                          <Select
+                            onChange={(e) => handleTaskStatus(e, task._id)}
+                            variant="standard"
                             sx={{
                               backgroundColor:
-                                _team.status === "pending"
+                                task.status === "not started"
                                   ? "#FFF3F3"
                                   : "#E9FFE5",
                               color:
-                                _team.status === "accepted"
-                                  ? "#18A800"
-                                  : "#D00000 ",
+                                task.status === "not started"
+                                  ? "#D00000"
+                                  : "#18A800",
                               border: "none",
                               outline: "none",
                               borderRadius: "10px",
                               padding: 1,
+                              boxShadow: "none",
+                              "&.Mui-focused": {
+                                boxShadow: "none", // Removing the box shadow when focused
+                              },
                             }}
+                            size="small"
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={task.status}
                           >
-
-                          {_team?.status}
-                          </Box>
+                            <MenuItem value="not started">Not Started</MenuItem>
+                            <MenuItem value="ongoing">Ongoing</MenuItem>
+                            <MenuItem value="completed">Completed</MenuItem>
+                            <MenuItem value="overdue">Overdue</MenuItem>
+                          </Select>
+                        </TableCell>
+                        <TableCell
+                          sx={{
+                            fontSize: "16px",
+                            fontWeight: "400",
+                            color: "#262626",
+                            whiteSpace: "nowrap",
+                            textAlign: "center",
+                          }}
+                        >
+                          {parse(task.description)}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -268,24 +265,19 @@ const refresh = () =>{
           </TableContainer>
 
           <Box mt={3}>
-            {!loading && !team?.length > 0 && (
+            {!loading && !project?.tasks?.length > 0 && (
               <Text
                 fw="600"
                 fs="16px"
                 color="#000"
                 sx={{ textAlign: "center" }}
               >
-                No members in this workspace
+                No Task Available in this project
               </Text>
             )}
           </Box>
         </Box>
       </Box>
-      <InviteWorkspaceModal
-        open={openInvite}
-        setOpen={setOpenInvite}
-        refresh={refresh}
-      />
     </>
   );
 }

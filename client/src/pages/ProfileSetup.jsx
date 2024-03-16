@@ -6,16 +6,25 @@ import { notify } from "../utils/utils";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { PhoneInput } from "react-international-phone";
+import "react-international-phone/style.css";
+import moment from "moment-timezone";
 
 export default function ProfileSetup() {
   const [payload, setPayload] = useState({
     fullName: "",
     industry: "",
+    timeZone: "",
+    phone: "",
   });
-  
+
   const [nextBtn, setNextBtn] = useState(false);
-  
- 
+
+   const timezones = moment.tz.names();
+
+  const handleTimezoneChange = (event) => {
+    setPayload({ ...payload, timeZone: event.target.value });
+  };
 
   const handleChange = (e) => {
     const { value, name } = e.target;
@@ -25,8 +34,6 @@ export default function ProfileSetup() {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  
 
   const submitWorkspace = (e) => {
     setNextBtn(true);
@@ -116,6 +123,39 @@ export default function ProfileSetup() {
               )}
             </Select>
           </FormControl>
+
+          <FormControl fullWidth margin="normal">
+            <label htmlFor="projects" style={{ marginBottom: "10px" }}>
+              <Text fw="500" fs="16px" ml={5}>
+                Time Zone
+              </Text>
+            </label>
+            <Select
+              labelId="timezone-label"
+              id="timezone-select"
+              value={payload.timeZone}
+              onChange={handleTimezoneChange}
+              size="small"
+              fullWidth
+              name="timeZone"
+            >
+              {timezones.map((timezone) => {  return (
+                // Format the display of the time zone, if desired
+                <MenuItem key={timezone} value={timezone}>
+                  {`${timezone} (UTC ${moment.tz(timezone).format("Z")})`}
+                </MenuItem>
+              )})}
+            </Select>
+          </FormControl>
+
+          <Box>
+            <PhoneInput
+              style={{ minWidth: "100%" }}
+              defaultCountry="ua"
+              value={payload.phone}
+              onChange={(phone) => setPayload({ ...payload, phone: phone })}
+            />
+          </Box>
           <LoadingButton
             loading={nextBtn}
             type="submit"

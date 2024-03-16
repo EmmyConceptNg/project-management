@@ -22,7 +22,16 @@ export const loginUser = async (req, res) => {
     // Generate a JWT token
     const token = jwt.sign({ userId: user._id }, "secretKey");
 
-    const workspace = await Workspace.findOne({userId: user._id}).sort({createdAt: -1})
+    const query = {
+      $or: [{ userId: user._id }, { "team.userId": user._id }],
+    };
+
+    const workspace = await Workspace.findOne(query)
+      .populate("team.userId", "fullName email timeZone phone _id")
+      .sort({
+        createdAt: -1,
+      })
+      .exec();
 
     res.status(200).json({ token, user, workspace });
   } catch (error) {
@@ -60,13 +69,29 @@ export const signupUser = async (req, res) => {
       otp,
     });
 
-    console.log(newUser);
+    // console.log(newUser);
 
     await newUser.save();
 
+    const workspace = req.query.workspace;
+
+    if (workspace) {
+      try {
+        let useWorkspace= {}
+        Workspace = await Workspace.findOneAndUpdate(
+          { _id: workspace },
+          { $push: { team: { userId: newUser._id } } },
+          { new: true }
+        ).populate("team.userId", "fullName email timeZone phone _id");
+        await Invitation.findOneAndDelete({ email: newUser.email, workspace: workspace});
+      } catch (error) {
+        console.error("Error updating workspace:", error);
+      }
+    }
+
     res
       .status(201)
-      .json({ message: "User registered successfully", user: newUser });
+      .json({ message: "User registered successfully", user: newUser, workspace: userWorkspace });
   } catch (error) {
     console.error("Error registering user:", error);
     res
@@ -170,9 +195,14 @@ export const verifyUser = async (req, res) => {
   }
 };
 
+export const setUpUser = (req, res) => {
+  const { fullName, userId, industry, timeZone, phone } = req.body;
 
-export const setUpUser =(req, res) =>{
-  const {fullName, userId, industry} = req.body;
-
-  UserModel.findOneAndUpdate({_id : userId}, {fullName, industry}, {new: true}).then(user => res.status(200).json({user})).catch(error => res.status(500).json({error}));
-}
+  UserModel.findOneAndUpdate(
+    { _id: userId },
+    { fullName, industry, timeZone, phone },
+    { new: true }
+  )
+    .then((user) => res.status(200).json({ user }))
+    .catch((error) => res.status(500).json({ error }));
+};

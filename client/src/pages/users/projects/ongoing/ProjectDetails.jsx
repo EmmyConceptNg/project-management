@@ -15,15 +15,25 @@ import {
   Stack,
 } from "@mui/material";
 
-import { ArrowBackIos, Delete, Folder, MoreVert } from "@mui/icons-material";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { ArrowBackIos,  } from "@mui/icons-material";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import Text from "../../../../components/utils/Text";
+import axios from "../../../../api/axios";
+import { useSelector } from "react-redux";
+import parse from "html-react-parser";
+import ProjectLoader from "../../../../components/utils/ProjectLoader";
+
 
 export default function OngoingDetails() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(null);
+  const [project, setProject] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  const {projectId} = useParams()
+  const user = useSelector(state=> state.user)
 
   const handleClick = (event, index) => {
     setAnchorEl(event.currentTarget);
@@ -39,6 +49,11 @@ export default function OngoingDetails() {
   const id = open ? "simple-popover" : undefined;
 
   const navigate = useNavigate();
+
+  useEffect(() =>{
+    setLoading(true)
+    axios.get(`/api/projects/${projectId}/${user?._id}/ongoing`).then((response) =>{setProject(response.data.project); setLoading(false)})
+  },[])
 
   return (
     <>
@@ -66,7 +81,7 @@ export default function OngoingDetails() {
       >
         <Box mb={3}>
           <Text fw="600" fs="22px">
-            {`Project Alpha > Project Details`}
+            {`${project?.name ?? ""} > Project Details`}
           </Text>
         </Box>
       </Box>
@@ -79,88 +94,31 @@ export default function OngoingDetails() {
         >
           <Box mb={3} ml={7}>
             <Text fw="600" fs="22px">
-              Designing and Development of Project Management Web App
+              {!loading ? (
+                project?.name
+              ) : (
+                <ProjectLoader sx={{ height: "50px" }} />
+              )}
             </Text>
           </Box>
         </Box>
 
         <Box
           display="flex"
-          justifyContent="center"
+          justifyContent="flex-start"
           mt={3}
           mx={{ md: 5, lg: 5, sm: 2, xs: 2 }}
         >
           <Text
-            sx={{ mx: { sm: 1, xs: 1, md: 25, lg: 25 } }}
+            sx={{ mx: { sm: 1, xs: 1, md: 25, lg: 25 }, textAlign: "left" }}
             fw="500"
             fs="18px"
           >
-            1. Introduction: The project aims to develop a comprehensive Project
-            Management Web Application and concurrently design a modern,
-            user-friendly interface for seamless navigation and enhanced user
-            experience. This dual-phase initiative will empower project managers
-            and teams to efficiently plan, execute, and monitor projects while
-            ensuring a visually appealing and intuitive interface for optimal
-            user engagement. 2. Objectives: 2.1 Project Management Web
-            Application: Develop a robust project management system with
-            features including task management, resource allocation, team
-            collaboration, progress tracking, and reporting. Integration with
-            popular project management methodologies (e.g., Agile, Scrum,
-            Kanban) to cater to diverse project requirements. User
-            authentication and authorization mechanisms to ensure secure access
-            and data protection. Real-time collaboration features such as chat,
-            notifications, and document sharing. Customizable dashboards and
-            reporting tools for project analytics. Mobile responsiveness to
-            facilitate access from various devices. 2.2 Web Design: Create a
-            visually appealing and modern web design for the project management
-            application. Ensure a user-friendly interface that enhances user
-            experience and promotes ease of navigation. Consistent design
-            elements and branding across all pages for a cohesive and
-            professional look. Optimize the design for various screen sizes and
-            resolutions to ensure responsiveness. Incorporate user feedback and
-            iterative design processes to refine and enhance the user interface.
-            3. Project Scope: 3.1 Project Management Web Application: Define and
-            implement the core functionality of the project management system.
-            Develop a scalable architecture to accommodate future updates and
-            additional features. Integration with third-party tools and services
-            (e.g., calendars, email, file storage) to enhance functionality.
-            Implement a robust testing phase to identify and resolve any bugs or
-            issues. Provide comprehensive documentation for system
-            administrators and end-users. 3.2 Web Design: Conduct user research
-            to understand user preferences and expectations. Create wireframes
-            and prototypes to visualize the design and gather feedback. Develop
-            a design system and style guide for consistent design elements.
-            Implement the final design based on the approved prototypes and user
-            feedback. Conduct usability testing to ensure the design meets user
-            needs and expectations. 4. Deliverables: 4.1 Project Management Web
-            Application: Fully functional project management web application.
-            Source code repository with version control. Technical documentation
-            for system administrators and developers. User documentation and
-            training materials. 4.2 Web Design: High-fidelity design mockups and
-            prototypes. Design system and style guide. Responsive web design
-            implementation. Usability testing reports and feedback
-            documentation. 5. Timeline: The project will be divided into phases
-            with distinct milestones. The estimated timeline for completion is
-            [insert timeline here], subject to adjustments based on feedback and
-            unforeseen challenges. 6. Team and Responsibilities: Project Manager
-            Software Developers UI/UX Designers Quality Assurance/Testers
-            Documentation and Support Team 7. Budget: A detailed budget
-            outlining resources, software licenses, and any external services
-            required for both development and design phases will be prepared and
-            presented for approval. 8. Risks and Mitigation: Identify potential
-            risks such as technical challenges, changes in project scope, and
-            external dependencies. Develop mitigation strategies to address
-            these risks and ensure a smooth project execution. 9. Approval: This
-            project scope is subject to approval by [insert relevant
-            stakeholders or project sponsors]. Once approved, any changes to the
-            scope will be communicated and agreed upon through a formal change
-            management process. 10. Conclusion: The Integrated Project
-            Management Web Application and Web Design project aim to deliver a
-            powerful, user-friendly, and visually appealing solution that meets
-            the needs of project managers and teams. Regular updates and
-            progress reports will be provided throughout the project lifecycle
-            to ensure transparency and alignment with stakeholders'
-            expectations.
+            {!loading ? (
+              project?.description && parse(project?.description)
+            ) : (
+              <ProjectLoader sx={{ height: "100px" }} />
+            )}
           </Text>
         </Box>
       </Box>

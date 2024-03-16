@@ -10,7 +10,7 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Text from "../../components/utils/Text";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
@@ -24,8 +24,11 @@ import axios from "../../api/axios";
 import { useState } from "react";
 
 export default function Login() {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const workspaceEmail = queryParams.get("email") ?? ""; 
   const [payload, setPayload] = useState({
-    email: "",
+    email: workspaceEmail ?? "",
     password: "",
   });
 
@@ -41,6 +44,7 @@ export default function Login() {
 
   const handleLogin = (e) => {
     dispatch({ type: "LOGOUT" });
+    dispatch({ type: "REMOVE_WORKSPACE"});
     e.preventDefault();
     setLoginBtn(true);
     axios
@@ -71,6 +75,7 @@ export default function Login() {
 
   return (
     <Box>
+      <ToastContainer />
       <Grid container spacing={1} justifyContent="space-between">
         <Grid item md={6} lg={6} xs={12} sm={12}>
           <Box display="flex" height={"100vh"}>
@@ -139,6 +144,7 @@ export default function Login() {
                     type="submit"
                     variant="contained"
                     color="primary"
+                    sx={{ height: "50px" }}
                   >
                     Login
                   </LoadingButton>
@@ -222,7 +228,6 @@ export default function Login() {
           sm={12}
           sx={{
             display: { md: "block", sm: "none", xs: "none" },
-            
           }}
         >
           <Box
@@ -233,7 +238,8 @@ export default function Login() {
               overflow: "hidden",
             }}
           >
-            <Box component="img"
+            <Box
+              component="img"
               src="assets/images/auth-image.svg"
               alt="Authentication"
               sx={{

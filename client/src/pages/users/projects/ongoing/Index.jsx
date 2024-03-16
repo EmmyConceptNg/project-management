@@ -48,19 +48,18 @@ export default function Ongoing() {
   const [openInvite, setOpenInvite] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
   const [projects, setProjects] = useState([]);
-  const [openCreateModal,
-setOpenCreateModal] = useState(false)
-const [refresh, setRefresh] = useState(false)
+  const [openCreateModal, setOpenCreateModal] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
   const markComplete = (projectId) => {
-    setPageLoading(true)
-    axios
-      .get(`/api/projects/${projectId}/update-status/completed`)
-      .then(() => {
-        const updatedProjects = projects.filter(project => project._id !== projectId)
-        setProjects(updatedProjects);
-        setPageLoading(false);
-      });
+    setPageLoading(true);
+    axios.get(`/api/projects/${projectId}/update-status/completed`).then(() => {
+      const updatedProjects = projects.filter(
+        (project) => project._id !== projectId
+      );
+      setProjects(updatedProjects);
+      setPageLoading(false);
+    });
   };
 
   const handleEditTask = () => {
@@ -73,14 +72,14 @@ const [refresh, setRefresh] = useState(false)
     setOpenInvite(true);
   };
 
-  
   const workspace = useSelector((state) => state.workspace);
 
   useEffect(() => {
     setPageLoading(true);
-    axios
-      .get(`/api/projects/${workspace?._id}/ongoing`)
-      .then((response) => {setProjects(response.data.projects); setPageLoading(false);});
+    axios.get(`/api/projects/${workspace?._id}/ongoing`).then((response) => {
+      setProjects(response.data.projects);
+      setPageLoading(false);
+    });
   }, [workspace, setProjects, refresh]);
 
   return (
@@ -106,12 +105,14 @@ const [refresh, setRefresh] = useState(false)
           alignItems="flex-start"
           alignContent="stretch"
         >
-          {pageLoading && Array(20).fill().map((arr, index)=>(
-            
-            <Grid item md={4} lg={4} sm={6} xs={12} key={index}>
-<ProjectLoader sx={{ height: '264px'}} />
-            </Grid>
-          ))}
+          {pageLoading &&
+            Array(20)
+              .fill()
+              .map((arr, index) => (
+                <Grid item md={4} lg={4} sm={6} xs={12} key={index}>
+                  <ProjectLoader sx={{ height: "264px" }} />
+                </Grid>
+              ))}
           {projects.map((item) => (
             <Grid item md={4} lg={4} sm={6} xs={12} key={item._id}>
               <Box
@@ -153,7 +154,7 @@ const [refresh, setRefresh] = useState(false)
                         color="#1a1a1a"
                         sx={{ cursor: "pointer" }}
                         onClick={() => {
-                          navigate("1");
+                          navigate(`${item._id}`);
                         }}
                       >
                         View Project
@@ -165,7 +166,7 @@ const [refresh, setRefresh] = useState(false)
                         color="#1a1a1a"
                         sx={{ cursor: "pointer" }}
                         onClick={() => {
-                          navigate("1/create");
+                          navigate(`${item._id}/create`);
                         }}
                       >
                         Add Task
@@ -302,7 +303,12 @@ const [refresh, setRefresh] = useState(false)
           ))}
         </Grid>
         {!projects.length && (
-          <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+          <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+          >
             <Text
               fw="600"
               fs="22px"
@@ -310,14 +316,24 @@ const [refresh, setRefresh] = useState(false)
             >
               No ongoing project on this workspace.
             </Text>
-            <Button variant="contained" sx={{width:"300px"}} onClick={() => setOpenCreateModal(true)}>Create Project</Button>
+            <Button
+              variant="contained"
+              sx={{ width: "300px" }}
+              onClick={() => setOpenCreateModal(true)}
+            >
+              Create Project
+            </Button>
           </Box>
         )}
       </Box>
       <EditTaskModal open={openModal} setOpen={setOpenModal} />
       <EditAccessModal open={openAccessModal} setOpen={setOpenAccessModal} />
       <InviteModal open={openInvite} setOpen={setOpenInvite} />
-      <CreateProjectModal open={openCreateModal} setOpen={setOpenCreateModal} setRefresh={setRefresh} />
+      <CreateProjectModal
+        open={openCreateModal}
+        setOpen={setOpenCreateModal}
+        setRefresh={setRefresh}
+      />
     </>
   );
 }

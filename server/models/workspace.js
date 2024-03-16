@@ -1,26 +1,23 @@
 import mongoose from "mongoose";
 
-const Workspace = mongoose.Schema(
+const Workspace = new mongoose.Schema(
   {
     name: String,
     numberOfProjects: Number,
     numberOfPeople: Number,
-    link:String,
     team: [
       {
         userId: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "User",
         },
-        specialityClass : String,
-
+        specialityClass: String,
       },
     ],
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    industry: String,
   },
   { timestamps: true }
 );

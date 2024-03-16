@@ -12,7 +12,7 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Text from "../../components/utils/Text";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
@@ -26,8 +26,12 @@ import axios from "../../api/axios";
 import { useState } from "react";
 
 export default function Signup() {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const workspaceEmail = queryParams.get('email') ?? ""; 
+
   const [payload, setPayload] = useState({
-    email: "",
+    email: workspaceEmail ?? "",
     password: "",
   });
 
@@ -43,6 +47,7 @@ export default function Signup() {
 
   const handleSignup = (e) => {
     dispatch({ type: "LOGOUT"});
+    dispatch({ type: "REMOVE_WORKSPACE"});
     e.preventDefault();
     setLoginBtn(true);
 
@@ -73,6 +78,7 @@ export default function Signup() {
 
   return (
     <Box>
+    <ToastContainer />
       <Grid container spacing={1} justifyContent="space-between">
         <Grid item md={7} lg={7} xs={12} sm={12}>
           <Box display="flex" height={"100vh"}>
@@ -157,7 +163,7 @@ export default function Signup() {
                     type="submit"
                     variant="contained"
                     color="primary"
-                    sx={{ textTransform: "capitalize" }}
+                    sx={{ textTransform: "capitalize", height: '50px' }}
                   >
                     Continue with Email
                   </LoadingButton>
@@ -225,8 +231,8 @@ export default function Signup() {
         </Grid>
         <Grid
           item
-          md={6}
-          lg={6}
+          md={5}
+          lg={5}
           xs={12}
           sm={12}
           sx={{

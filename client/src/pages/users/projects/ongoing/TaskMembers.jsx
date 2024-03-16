@@ -1,23 +1,10 @@
 import {
-  Avatar,
-  AvatarGroup,
   Box,
   Button,
-  Container,
-  Divider,
   FormControl,
-  Grid,
   IconButton,
-  InputLabel,
-  LinearProgress,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
   MenuItem,
-  Popover,
   Select,
-  Stack,
   Table,
   TableBody,
   TableCell,
@@ -27,11 +14,16 @@ import {
 } from "@mui/material";
 
 import { Add, ArrowBackIos, Delete, Folder, MoreVert } from "@mui/icons-material";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import Text from "../../../../components/utils/Text";
 import TableLoader from "../../../../components/utils/TableLoader";
+import axios from "../../../../api/axios";
+import { useSelector } from "react-redux";
+import ProjectLoader from "../../../../components/utils/ProjectLoader";
+
+import InviteProjecteModal from "../../../../components/projectManagers/InviteProjectModal";
 
 export default function TaskMembers() {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -51,56 +43,30 @@ export default function TaskMembers() {
   const id = open ? "simple-popover" : undefined;
 
   const navigate = useNavigate();
-
-
+const {projectId} = useParams()
+const user = useSelector(state => state.user);
   const [loading, setLoading] = useState(false);
-  const [tasks, setTasks] = useState([
-    {
-      teamMember: "Rhiannon Silva",
-      role: "Team Member",
-      timeZone: "EST",
-      contactNumber: "+1 309 1234 567",
-      email: "rihannons@gmail.com",
-      projectSpecialityClass: "Contributor",
-      reminderPreference: "email",
-    },
-    {
-      teamMember: "Hayden Kirby",
-      role: "Team Member & Stakeholder",
-      timeZone: "EST",
-      contactNumber: "+1 309 1234 567",
-      email: "haydenkirby@gmail.com",
-      projectSpecialityClass: "Milestone Owner",
-      reminderPreference: "text",
-    },
-    {
-      teamMember: "Hayden Kirby",
-      role: "Team Member & Stakeholder",
-      timeZone: "EST",
-      contactNumber: "+1 309 1234 567",
-      email: "haydenkirby@gmail.com",
-      projectSpecialityClass: "Milestone Owner",
-      reminderPreference: "text_email",
-    },
-    {
-      teamMember: "Hayden Kirby",
-      role: "Stakeholder",
-      timeZone: "EST",
-      contactNumber: "+1 309 1234 567",
-      email: "haydenkirby@gmail.com",
-      projectSpecialityClass: "Milestone Owner",
-      reminderPreference: "text",
-    },
-    {
-      teamMember: "Hayden Kirby",
-      role: "PM/Admin",
-      timeZone: "EST",
-      contactNumber: "+1 309 1234 567",
-      email: "haydenkirby@gmail.com",
-      projectSpecialityClass: "Milestone Owner",
-      reminderPreference: "text_email",
-    },
-  ]);
+  const [project, setProject] = useState([])
+
+  useEffect(() => {
+    fetchProject();
+  }, []);
+const refresh = () => {
+  fetchProject();
+};
+  const fetchProject = () => {
+    setLoading(true);
+    axios
+      .get(`/api/projects/${projectId}/${user?._id}/ongoing`)
+      .then((response) => {
+        setProject(response.data.project);
+        setLoading(false);
+      });
+  };
+
+  const [openInvite, setOpenInvite] = useState(false);
+
+  
 
 
   return (
@@ -126,15 +92,26 @@ export default function TaskMembers() {
         display="flex"
         alignItems="center"
       >
-        <Box mb={3} ml={7}>
-          <Text fw="600" fs="22px">
-            {`Project Alpha > Project Details`}
-          </Text>
-        </Box>
+        {loading ? (
+          <ProjectLoader sx={{ height: "50px" }} />
+        ) : (
+          <Box mb={3} ml={7}>
+            <Text fw="600" fs="22px">
+              {`${project?.name} > Team Members`}
+            </Text>
+          </Box>
+        )}
       </Box>
 
       <Box mb={3} display="flex" justifyContent="flex-end">
-<Button variant="contained" startIcon={<Add />} sx={{ borderRadius : '10px' }}>Add Team Member</Button>
+        <Button
+          variant="contained"
+          onClick={() => setOpenInvite(true)}
+          startIcon={<Add />}
+          sx={{ borderRadius: "10px" }}
+        >
+          Add Team Member
+        </Button>
       </Box>
 
       <Box>
@@ -196,15 +173,15 @@ export default function TaskMembers() {
                             ))}
                         </TableRow>
                       ))
-                  : tasks.map((task, index) => (
-                      <TableRow 
-                        key={task._id}
+                  : project?.team?.map((team, index) => (
+                      <TableRow
+                        key={team._id}
                         sx={{
                           "&:last-child td, &:last-child th": {
                             border: 0,
                           },
                           cursor: "pointer",
-                          '&:hover' : {backgroundColor : '#F5F5F5'}
+                          "&:hover": { backgroundColor: "#F5F5F5" },
                         }}
                       >
                         <TableCell
@@ -225,7 +202,7 @@ export default function TaskMembers() {
                             whiteSpace: "nowrap",
                           }}
                         >
-                          {task.teamMember}
+                          {team.userId.fullName}
                         </TableCell>
                         <TableCell
                           sx={{
@@ -235,7 +212,21 @@ export default function TaskMembers() {
                             whiteSpace: "nowrap",
                           }}
                         >
-                          {task.role}
+                          <FormControl fullWidth>
+                            <Select
+                              sx={{
+                                backgroundColor: "#F5F5F5",
+                                border: "none",
+                              }}
+                              size="small"
+                              labelId="demo-simple-select-label"
+                              id="demo-simple-select"
+                              value={team.role}
+                            >
+                              <MenuItem value="project manager">project manager</MenuItem>
+                              <MenuItem value="team member">team member</MenuItem>
+                            </Select>
+                          </FormControl>
                         </TableCell>
                         <TableCell
                           sx={{
@@ -245,7 +236,7 @@ export default function TaskMembers() {
                             whiteSpace: "nowrap",
                           }}
                         >
-                          {task.timeZone}
+                          {team?.userId?.timeZone}
                         </TableCell>
                         <TableCell
                           sx={{
@@ -255,7 +246,7 @@ export default function TaskMembers() {
                             whiteSpace: "nowrap",
                           }}
                         >
-                          {task.contactNumber}
+                          {team?.userId?.phone}
                         </TableCell>
                         <TableCell
                           sx={{
@@ -265,7 +256,7 @@ export default function TaskMembers() {
                             whiteSpace: "nowrap",
                           }}
                         >
-                          {task.email}
+                          {team?.userId?.email}
                         </TableCell>
                         <TableCell
                           sx={{
@@ -275,7 +266,7 @@ export default function TaskMembers() {
                             whiteSpace: "nowrap",
                           }}
                         >
-                          {task.projectSpecialityClass}
+                          {team.projectSpecialityClass}
                         </TableCell>
 
                         <TableCell
@@ -288,11 +279,14 @@ export default function TaskMembers() {
                         >
                           <FormControl fullWidth>
                             <Select
-                              sx={{ backgroundColor: "#F5F5F5", border: 'none' }}
+                              sx={{
+                                backgroundColor: "#F5F5F5",
+                                border: "none",
+                              }}
                               size="small"
                               labelId="demo-simple-select-label"
                               id="demo-simple-select"
-                              value={task.reminderPreference}
+                              value={team.reminderPreference}
                             >
                               <MenuItem value="email">Email</MenuItem>
                               <MenuItem value="text">Text</MenuItem>
@@ -309,19 +303,25 @@ export default function TaskMembers() {
           </TableContainer>
 
           <Box mt={3}>
-            {!loading && !tasks?.length > 0 && (
+            {!loading && !project?.team?.length > 0 && (
               <Text
                 fw="600"
                 fs="16px"
                 color="#000"
                 sx={{ textAlign: "center" }}
               >
-                No Subscription Available
+                No Member on this Project
               </Text>
             )}
           </Box>
         </Box>
       </Box>
+      <InviteProjecteModal
+        open={openInvite}
+        setOpen={setOpenInvite}
+        refresh={refresh}
+        project={project}
+      />
     </>
   );
 }
