@@ -1,0 +1,31 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+body{
+ font-family: "Noto Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+.css-1wxji84-MuiInputBase-root-MuiInput-root-MuiSelect-root::before {
+  border-bottom: none !important; /* Remove the box shadow */
+}
+.css-1wxji84-MuiInputBase-root-MuiInput-root-MuiSelect-root::after {
+  border-bottom: none !important; /* Remove the box shadow */
+}
+.css-1dsp1b2-MuiInputBase-root-MuiInput-root-MuiSelect-root::before {
+     border-bottom: none !important;
+}
+.css-1dsp1b2-MuiInputBase-root-MuiInput-root-MuiSelect-root::after {
+     border-bottom: none !important;
+}
+.css-jd1zyo-MuiSelect-select-MuiInputBase-input-MuiInput-input.css-jd1zyo-MuiSelect-select-MuiInputBase-input-MuiInput-input.css-jd1zyo-MuiSelect-select-MuiInputBase-input-MuiInput-input{
+    padding: 5px;
+}
+.react-international-phone-input-container .react-international-phone-input{
+  width: 100%;
+  height : 50px;
+}
+.react-international-phone-input-container .react-international-phone-country-selector-button {
+height : 50px;
+
+}
