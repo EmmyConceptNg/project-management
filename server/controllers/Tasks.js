@@ -49,6 +49,21 @@ export const index = (req, res) => {
       res.status(500).json({ error });
     });
 };
+export const getTask = (req, res) => {
+  const { taskId } = req.params;
+
+  Tasks.findOne({ _id: taskId })
+    .populate("team")
+   
+    .then((updatedTasks) => {
+      // Send back the updated tasks
+      res.status(200).json({ task: updatedTasks });
+    })
+    .catch((error) => {
+      console.error("Error getting tasks:", error);
+      res.status(500).json({ error });
+    });
+};
 
 export const create = (req, res) => {
   const { name, startDate, endDate, team, description, milestoneId } = req.body;
@@ -64,8 +79,8 @@ export const create = (req, res) => {
     .then(async (task) => {
       const user = await UserModel.findOne({ _id: team });
       const milestone = await Milestone.findOne({ _id: milestoneId });
-      const link = `${FRONTEND_URL}/`;
-      sendMail("reciever", "subject", TaskMail(user, milestone, link));
+      const link = `${process.env.FRONTEND_URL}/dashboard/projects/ongoing/${milestoneId}/breakdown`;
+      sendMail(user.email, "Task Assigned", TaskMail(user, milestone, link));
       res.status(200).json({ task: task, message: "Task added successfully" });
     })
     .catch((error) => {

@@ -14,6 +14,7 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
+  Menu,
   MenuItem,
   Popover,
   Select,
@@ -26,7 +27,7 @@ import {
   TableRow,
 } from "@mui/material";
 
-import { ArrowBackIos, Delete, Folder, MoreVert } from "@mui/icons-material";
+import { ArrowBackIos, Delete, DeleteForever, Edit, Folder, MoreVert } from "@mui/icons-material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
@@ -95,6 +96,7 @@ export default function TaskBreakdownTable({ milestone, loading, fetchMilestone,
                     "End Date",
                     "On / Off Track",
                     "Notes",
+                    "Actions",
                   ].map((table, _index) => (
                     <TableCell
                       sx={{
@@ -160,7 +162,7 @@ export default function TaskBreakdownTable({ milestone, loading, fetchMilestone,
                         >
                           {task.name}
                         </TableCell>
-                       
+
                         <TableCell
                           sx={{
                             fontSize: "16px",
@@ -246,6 +248,63 @@ export default function TaskBreakdownTable({ milestone, loading, fetchMilestone,
                           }}
                         >
                           {parse(task.description)}
+                        </TableCell>
+                        <TableCell
+                          sx={{
+                            fontSize: "16px",
+                            fontWeight: "400",
+                            color: "#262626",
+                            whiteSpace: "nowrap",
+                            textAlign: "center",
+                          }}
+                        >
+                          <IconButton onClick={handleClick}>
+                            <MoreVert />
+                          </IconButton>
+                          <Menu
+                            elevation={0}
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={handleClose}
+                            id={id}
+                          >
+                            <Box
+                              sx={{
+                                border: "1px solid #c9c9c9",
+                                borderRadius: "10px",
+                              }}
+                            >
+                              <MenuItem onClick={handleClose}>
+                                <Box
+                                  display="flex"
+                                  gap={1}
+                                  sx={{ cursor: "pointer" }}
+                                  onClick={() =>
+                                    navigate(
+                                      `/dashboard/projects/ongoing/${milestone?.projectId}/task/edit/${task._id}`
+                                    )
+                                  }
+                                >
+                                  <Edit
+                                    sx={{ fontSize: "16px", color: "green" }}
+                                  />
+                                  <Text fw="400" fs="16px">
+                                    Edit
+                                  </Text>
+                                </Box>
+                              </MenuItem>
+                              <MenuItem onClick={handleClose}>
+                                <Box display="flex" gap={1}>
+                                  <DeleteForever
+                                    sx={{ fontSize: "16px", color: "red" }}
+                                  />
+                                  <Text fw="400" fs="16px">
+                                    Delete
+                                  </Text>
+                                </Box>
+                              </MenuItem>
+                            </Box>
+                          </Menu>
                         </TableCell>
                       </TableRow>
                     ))}

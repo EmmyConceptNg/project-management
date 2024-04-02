@@ -39,11 +39,11 @@ export const AppRoutes = () => {
         { path: "projects/ongoing/:projectId", element: <OngoingView /> },
         { path: "projects/ongoing/:projectId/edit-project", element: <EditProject /> },
         { path: "projects/ongoing/:projectId/milestone/create", element: <AddMilestone /> },
-        { path: "projects/ongoing/:projectId/edit", element: <EditTask /> },
         { path: "projects/ongoing/:projectId/details", element: <OngoingDetails /> },
         { path: "projects/ongoing/:projectId/milestones", element: <Milestones /> },
         { path: "projects/ongoing/:projectId/members", element: <TaskMembers /> },
         { path: "projects/ongoing/:projectId/chart", element: <TaskBreakdownChart /> },
+        { path: "projects/ongoing/:projectId/task/edit/:taskId", element: <EditTask /> },
         { path: "projects/ongoing/:projectId/:milestoneId/task/create", element: <AddTask /> },
         { path: "projects/ongoing/:milestoneId/breakdown", element: <TaskBreakdown /> },
 
