@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Checkbox,
   Divider,
   FormControl,
@@ -23,7 +24,9 @@ import { useDispatch } from "react-redux";
 import { notify } from "../../utils/utils";
 import { ToastContainer } from "react-toastify";
 import axios from "../../api/axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useGoogleLogin } from "@react-oauth/google";
+import { Icon } from "@iconify/react";
 
 export default function Signup() {
   const location = useLocation();
@@ -65,6 +68,22 @@ export default function Signup() {
         setLoginBtn(false);
       });
   };
+  const handleSignupGoogle = (values) => {
+    setLoginBtn(true);
+    axios
+      .post("/api/user/signup", values, {
+        headers: { "Content-Type": "application/json" },
+      })
+      .then((response) => {
+        console.log(response.data);
+        dispatch({ type: "SET_USER", payload: response.data.user });
+        navigate("/workspace");
+      })
+      .catch((error) => {
+        notify(error?.response?.data?.error, "error");
+        setLoginBtn(false);
+      });
+  };
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -76,9 +95,45 @@ export default function Signup() {
 
   const [checked, setChecked] = useState(false)
 
+
+
+  const [googelUser, setGoogleUser] = useState([]);
+
+  const signUpWithGoogle = useGoogleLogin({
+    onSuccess: (codeResponse) => setGoogleUser(codeResponse),
+    onError: (error) => console.log("Login Failed:", error),
+  });
+
+  useEffect(() => {
+    if (googelUser && googelUser.access_token) {
+      // Ensure there's an access token
+      axios
+        .get(
+          `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googelUser.access_token}`,
+          {
+            headers: {
+              Authorization: `Bearer ${googelUser.access_token}`,
+            },
+          }
+        )
+        .then((res) => {
+          
+          handleSignupGoogle({
+            fullName: res.data.name,
+            email: res.data.email,
+            image: res.data.picture,
+            isVerified: res.data.verified_email,
+          });
+        })
+        .catch((err) => {
+          console.error("Error fetching Google user info:", err.message);
+        });
+    }
+  }, [googelUser]);
+
   return (
     <Box>
-    <ToastContainer />
+      <ToastContainer />
       <Grid container spacing={1} justifyContent="space-between">
         <Grid item md={7} lg={7} xs={12} sm={12}>
           <Box display="flex" height={"100vh"}>
@@ -163,7 +218,7 @@ export default function Signup() {
                     type="submit"
                     variant="contained"
                     color="primary"
-                    sx={{ textTransform: "capitalize", height: '50px' }}
+                    sx={{ textTransform: "capitalize", height: "50px" }}
                   >
                     Continue with Email
                   </LoadingButton>
@@ -180,20 +235,14 @@ export default function Signup() {
                 </Text>
               </Divider>
               <Box>
-                <Box
-                  borderRadius="10px"
-                  width="100%"
-                  height="44px"
-                  border="1px solid #D9D9D9"
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
+                <Button
+                  onClick={() => signUpWithGoogle()}
+                  variant="outlined"
+                  sx={{ color: "#344054", width: "100%", height: "44px" }}
+                  startIcon={<Icon icon="devicon:google" />}
                 >
-                  <Box component="img" src="assets/icons/google.svg" />
-                  <Text fw="500" fs="16px" ml={5}>
-                    Continue with google
-                  </Text>
-                </Box>
+                  Sign up with Google
+                </Button>
                 <Box
                   mt={2}
                   borderRadius="10px"

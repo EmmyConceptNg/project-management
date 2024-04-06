@@ -38,11 +38,11 @@ export const MenuItems = [
 
     group: [
       { id: "profile", name: "Profile", link: "/dashboard/profile" },
-      {
-        id: "notifications",
-        name: "Notifications",
-        link: "/dashboard/notifications",
-      },
+      // {
+      //   id: "notifications",
+      //   name: "Notifications",
+      //   link: "/dashboard/notifications",
+      // },
     ],
   },
 ];

@@ -213,16 +213,6 @@ export default function Ongoing() {
                           fs="18px"
                           color="#1a1a1a"
                           sx={{ cursor: "pointer" }}
-                          onClick={handleEditTaskAccess}
-                        >
-                          Edit Access
-                        </Text>
-                        <Divider sx={{ my: 1 }} />
-                        <Text
-                          fw="500"
-                          fs="18px"
-                          color="#1a1a1a"
-                          sx={{ cursor: "pointer" }}
                           onClick={() => handleInvitePeople(item) }
                         >
                           Invite People

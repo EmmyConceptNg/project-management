@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Divider,
   FormControl,
   Grid,
@@ -21,7 +22,9 @@ import { useDispatch } from "react-redux";
 import { notify } from "../../utils/utils";
 import { ToastContainer } from "react-toastify";
 import axios from "../../api/axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useGoogleLogin } from "@react-oauth/google";
+import { Icon } from "@iconify/react";
 
 export default function Login() {
   const location = useLocation();
@@ -72,6 +75,66 @@ export default function Login() {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+
+
+
+  const handleLoginGoogle = (values) => {
+    setLoginBtn(true);
+
+    axios
+      .post("/api/user/login/google", values, {
+        headers: { "Content-Type": "application/json" },
+      })
+      .then((response) => {
+        console.log(response.data.user);
+        dispatch({ type: "SET_USER", payload: response.data.user });
+        dispatch({ type: "SET_WORKSPACE", payload: response.data.workspace });
+        navigate("/dashboard");
+      })
+      .catch((error) => {
+        console.log(error);
+        notify(error?.response?.data?.error, "error");
+      })
+      .finally(() => setLoginBtn(false));
+  };
+
+  const [googleUser, setGoogleUser] = useState([]);
+
+  const signUpWithGoogle = useGoogleLogin({
+    onSuccess: (codeResponse) => {
+      setGoogleUser(codeResponse);
+      console.log(codeResponse);
+    },
+    onError: (error) => console.log("Login Failed:", error),
+  });
+
+  useEffect(() => {
+    if (googleUser && googleUser.access_token) {
+      // Ensure there's an access token
+      axios
+        .get(
+          `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleUser.access_token}`,
+          {
+            headers: {
+              Authorization: `Bearer ${googleUser.access_token}`,
+            },
+          }
+        )
+        .then((res) => {
+         
+          handleLoginGoogle(
+            {
+              email: res.data.email,
+              emailVerified: res.data.verified_email,
+            },
+            
+          );
+        })
+        .catch((err) => {
+          console.error("Error fetching Google user info:", err.message);
+        });
+    }
+  }, [googleUser]);
 
   return (
     <Box>
@@ -173,20 +236,17 @@ export default function Login() {
                 </Text>
               </Divider>
               <Box>
-                <Box
-                  borderRadius="10px"
-                  width="100%"
-                  height="44px"
-                  border="1px solid #D9D9D9"
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
+                  <Box>
+                <Button
+                  onClick={()=>signUpWithGoogle()}
+                
+                  variant="outlined"
+                  sx={{ color :"#344054",  width:"100%", height:"44px" }}
+                  startIcon={<Icon icon="devicon:google" />}
                 >
-                  <Box component="img" src="assets/icons/google.svg" />
-                  <Text fw="500" fs="16px" ml={5}>
-                    Continue with google
-                  </Text>
-                </Box>
+                  Sign in with Google
+                </Button>
+              </Box>
                 <Box
                   mt={2}
                   borderRadius="10px"

@@ -35,10 +35,10 @@ export const Index = async (req, res) => {
     }).populate('team');
 
     // Collect projectIds from tasks
-    const projectIds = tasksForToday.map((task) => task.projectId);
+    const milestoneIds = tasksForToday.map((task) => task.milestoneId);
 
     // Find projects corresponding to projectIds
-    const projectsForToday = await Project.find({ _id: { $in: projectIds } });
+    const projectsForToday = await Project.find({ _id: { $in: milestoneIds } });
 
     // Prepare the response with tasks and their corresponding projects
     const tasksWithProjects = tasksForToday.map((task) => {

@@ -23,7 +23,7 @@ export const loginUser = async (req, res) => {
       return res.status(401).json({ error: "Invalid email or password" });
     }
     // Generate a JWT token
-    const token = jwt.sign({ userId: user._id }, "secretKey");
+    const token = jwt.sign({ userId: user._id }, process.env.JWTSECRET);
 
     const query = {
       $or: [{ userId: user._id }, { "team.userId": user._id }],
@@ -40,6 +40,55 @@ export const loginUser = async (req, res) => {
   } catch (error) {
     console.error("Error logging in:", error);
     res.status(500).json({ error: "An error occurred while logging in" });
+  }
+};
+
+export const loginGoogle = async (req, res) => {
+  try {
+    const signdetails = req.body;
+    const user = await UserModel.findOne({ email: signdetails.email })
+      .lean();
+
+    if (!user) {
+      return res.status(404).json({ error: "Email not found" });
+    }
+
+    // if (!user.isVerified) {
+    //   return res.status(401).json({ error: "Email not verified" });
+    // }
+
+    const token = jwt.sign(
+      {
+        id: user._id,
+        email: user.email,
+      },
+      process.env.JWTSECRET,
+      { expiresIn: "1h" }
+    );
+
+    delete user.password;
+     const query = {
+       $or: [{ userId: user._id }, { "team.userId": user._id }],
+     };
+
+     const workspace = await Workspace.findOne(query)
+       .populate("team.userId", "fullName email timeZone phone _id")
+       .sort({
+         createdAt: -1,
+       })
+       .exec();
+
+    res
+      .cookie("access_token", token, {
+        httpOnly: true,
+        sameSite: "lax", // or 'strict' depending on your requirements
+        secure: process.env.NODE_ENV === "production", // Set secure to true if in production (uses HTTPS)
+      })
+      .status(200)
+      .json({ user, workspace });
+  } catch (error) {
+    console.error("Error during Google login:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -77,10 +126,11 @@ export const signupUser = async (req, res) => {
     await newUser.save();
 
     const workspace = req.query.workspace;
+    let userWorkspace = {};
 
     if (workspace) {
       try {
-        let useWorkspace= {}
+        
         Workspace = await Workspace.findOneAndUpdate(
           { _id: workspace },
           { $push: { team: { userId: newUser._id } } },

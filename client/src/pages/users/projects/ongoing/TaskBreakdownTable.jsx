@@ -36,6 +36,8 @@ import TableLoader from "../../../../components/utils/TableLoader";
 import moment from "moment";
 import parse from 'html-react-parser'
 import axios from "../../../../api/axios";
+import Swal from 'sweetalert2'
+import { notify } from "../../../../utils/utils";
 
 export default function TaskBreakdownTable({ milestone, loading, fetchMilestone, fetchTasks, tasks }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -64,6 +66,44 @@ export default function TaskBreakdownTable({ milestone, loading, fetchMilestone,
     axios.post(`api/tasks/change-status`, payload).then(() => {
       fetchTasks();
     });
+  };
+
+
+
+  
+
+
+
+  const handleDelete = (taskId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      axios
+        .post(`/api/tasks/delete/${taskId}`)
+        .then((response) => {
+          if (result.isConfirmed) {
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your file has been deleted.",
+              icon: "success",
+            });
+          }
+        })
+        .catch((err) => {
+          notify(err?.response?.data?.error, "error");
+        })
+        .finally(() => {
+          fetchTasks();
+        });
+      
+    });
+    
   };
 
   return (
@@ -104,7 +144,7 @@ export default function TaskBreakdownTable({ milestone, loading, fetchMilestone,
                         whiteSpace: "nowrap",
                         fontSize: "18px",
                         color: "#262626",
-                        textAlign: table === "Milestone" ? "left" : "center",
+                        textAlign: table === "left",
                       }}
                       key={_index}
                     >
@@ -146,7 +186,7 @@ export default function TaskBreakdownTable({ milestone, loading, fetchMilestone,
                             fontWeight: "400",
                             color: "#262626",
                             whiteSpace: "nowrap",
-                            textAlign: "center",
+                            textAlign: "lefft",
                           }}
                         >
                           {index + 1}
@@ -157,7 +197,7 @@ export default function TaskBreakdownTable({ milestone, loading, fetchMilestone,
                             fontWeight: "400",
                             color: "#262626",
                             whiteSpace: "nowrap",
-                            textAlign: task.milestone ? "left" : "center",
+                            textAlign: "left"
                           }}
                         >
                           {task.name}
@@ -169,7 +209,7 @@ export default function TaskBreakdownTable({ milestone, loading, fetchMilestone,
                             fontWeight: "400",
                             color: "#262626",
                             whiteSpace: "nowrap",
-                            textAlign: "center",
+                            textAlign: "left",
                           }}
                         >
                           {task?.team.fullName}
@@ -180,7 +220,7 @@ export default function TaskBreakdownTable({ milestone, loading, fetchMilestone,
                             fontWeight: "400",
                             color: "#262626",
                             whiteSpace: "nowrap",
-                            textAlign: "center",
+                            textAlign: "left",
                           }}
                         >
                           {moment(task.startDate).format("MMM Do YYYY")}
@@ -191,7 +231,7 @@ export default function TaskBreakdownTable({ milestone, loading, fetchMilestone,
                             fontWeight: "400",
                             color: "#262626",
                             whiteSpace: "nowrap",
-                            textAlign: "center",
+                            textAlign: "left",
                           }}
                         >
                           {moment(task.endDate).format("MMM Do YYYY")}
@@ -203,7 +243,7 @@ export default function TaskBreakdownTable({ milestone, loading, fetchMilestone,
                             fontWeight: "400",
                             color: "#262626",
                             whiteSpace: "nowrap",
-                            textAlign: "center",
+                            textAlign: "left",
                           }}
                         >
                           <Select
@@ -244,7 +284,7 @@ export default function TaskBreakdownTable({ milestone, loading, fetchMilestone,
                             fontWeight: "400",
                             color: "#262626",
                             whiteSpace: "nowrap",
-                            textAlign: "center",
+                            textAlign: "left",
                           }}
                         >
                           {parse(task.description)}
@@ -255,7 +295,7 @@ export default function TaskBreakdownTable({ milestone, loading, fetchMilestone,
                             fontWeight: "400",
                             color: "#262626",
                             whiteSpace: "nowrap",
-                            textAlign: "center",
+                            textAlign: "left",
                           }}
                         >
                           <IconButton onClick={handleClick}>
@@ -286,19 +326,19 @@ export default function TaskBreakdownTable({ milestone, loading, fetchMilestone,
                                   }
                                 >
                                   <Edit
-                                    sx={{ fontSize: "16px", color: "green" }}
+                                    sx={{ fontSize: "18px", color: "green" }}
                                   />
-                                  <Text fw="400" fs="16px">
+                                  <Text fw="400" fs="18px">
                                     Edit
                                   </Text>
                                 </Box>
                               </MenuItem>
                               <MenuItem onClick={handleClose}>
-                                <Box display="flex" gap={1}>
+                                <Box display="flex" gap={1} sx={{cursor : 'pointer'}} onClick={() => handleDelete(task._id)}>
                                   <DeleteForever
-                                    sx={{ fontSize: "16px", color: "red" }}
+                                    sx={{ fontSize: "18px", color: "red" }}
                                   />
-                                  <Text fw="400" fs="16px">
+                                  <Text fw="400" fs="18px">
                                     Delete
                                   </Text>
                                 </Box>

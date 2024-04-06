@@ -7,7 +7,9 @@ import {
   resetpassword,
   verifyUser,
   setUpUser,
-  uploadImage, getImage
+  uploadImage,
+  getImage,
+  loginGoogle,
 } from "../controllers/user.js";
 
 const router = express.Router();
@@ -27,6 +29,7 @@ const upload = multer({ storage: storage });
 
 // login route
 router.post("/login", loginUser);
+router.post("/login/google", loginGoogle);
 
 // signup route
 router.post("/signup", signupUser);

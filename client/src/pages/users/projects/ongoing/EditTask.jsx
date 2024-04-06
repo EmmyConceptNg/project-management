@@ -1,55 +1,115 @@
-import { Avatar, AvatarGroup, Box, Button, Container, Divider, FormControl, Grid, IconButton, LinearProgress, List, ListItem, ListItemAvatar, ListItemText, MenuItem, OutlinedInput, Popover, Select, Stack } from '@mui/material'
-import Text from '../../../../components/utils/Text';
-import { ArrowBackIos, Delete, Folder, MoreVert } from '@mui/icons-material';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Icon } from '@iconify/react';
+import {
+  Box,
+  Button,
+  FormControl,
+  Grid,
+  IconButton,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  Stack,
+} from "@mui/material";
+import Text from "../../../../components/utils/Text";
+import { ArrowBackIos } from "@mui/icons-material";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "ckeditor5-build-classic-mathtype";
-   
+import axios from "../../../../api/axios";
+import { useSelector } from "react-redux";
+import { notify } from "../../../../utils/utils";
+import { LoadingButton } from "@mui/lab";
+import { ToastContainer } from "react-toastify";
+
 export default function EditTask() {
   const today = new Date().toISOString().split("T")[0];
-   const [anchorEl, setAnchorEl] = useState(null);
-   const [selectedIndex, setSelectedIndex] = useState(null);
 
-   const handleClick = (event, index) => {
-     setAnchorEl(event.currentTarget);
-     setSelectedIndex(index);
-   };
+  const [project, setProject] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const user = useSelector((state) => state.user);
+  const { taskId, projectId } = useParams();
+  const [task, setTask] = useState({});
+  const [creatingTask, setCreatingTask] = useState(false);
+  const navigate = useNavigate();
 
-   const handleClose = () => {
-     setAnchorEl(null);
-     setSelectedIndex(null);
-   };
-
-   const open = Boolean(anchorEl);
-   const id = open ? "simple-popover" : undefined;
-
-   const navigate = useNavigate()
-   
-
-   const [payload, setPayload] = useState({
-    title : '',
+  const [payload, setPayload] = useState({
+    name: '',
     startDate: '',
-    endDate : '',
-    projectName : '',
-    projectOwner : '',
-    team : [],
-    status : '',
-    description : ''
-   })
+    endDate: '',
+    team: '',
+    description: '',
+  });
+
+  useEffect(() => {
+    fetchProject();
+    fetchTask()
+  }, []);
+
+  useEffect(() => {
+    if (Object.keys(task).length > 0) {
+      const formattedStartDate = task.startDate.split("T")[0]; 
+      const formattedEndDate = task.endDate.split("T")[0]; 
+
+      setPayload({
+        name: task.name ?? "",
+        startDate: formattedStartDate,
+        endDate: formattedEndDate,
+        team: task.team?._id ?? "",
+        description: task.description ?? "",
+      });
+    }
+  }, [task]);
 
 
-   const handleChange=(e)=>{
-    const {name, value} = e.target
-    setPayload({...payload, [name] : value});
-   }
-const handleDescriptionChange =(data)=>{
-  setPayload({...payload, description : data});
-}
- 
+  const fetchProject = () =>{
+    setLoading(true);
+    axios
+      .get(`/api/projects/${projectId}/${user?._id}/ongoing`)
+      .then((response) => {
+        setProject(response.data.project);
+        setLoading(false);
+      });
+  }
+
+  const fetchTask = () =>{
+    setLoading(true);
+    axios
+      .get(`/api/tasks/get-task/${taskId}`)
+      .then((response) => {
+        setTask(response.data.task);
+        console.log('name',response.data.task.name);
+        setLoading(false);
+      });
+  }
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setPayload({ ...payload, [name]: value });
+  };
+  const handleDescriptionChange = (data) => {
+    setPayload({ ...payload, description: data });
+  };
+
+  const handleAddTask = (e) => {
+    e.preventDefault();
+    setCreatingTask(true);
+    
+    axios
+      .post(`/api/tasks/update/${taskId}`, payload)
+      .then((response) => {
+        navigate(`/dashboard/projects/ongoing/${taskId}/breakdown`);
+        notify(response.data.message, "success");
+        setCreatingTask(false);
+      })
+      .catch((err) => {
+        setCreatingTask(false);
+        notify(err?.response?.data?.error, "error");
+      });
+  };
+
   return (
     <>
+      <ToastContainer />
       <Box
         borderBottom="1px solid #D9D9D9 "
         mb={3}
@@ -66,9 +126,9 @@ const handleDescriptionChange =(data)=>{
         </Box>
       </Box>
 
-      <Box>
+      <Box component="form" onSubmit={handleAddTask}>
         <Grid container spacing={{ md: 3, lg: 3, sm: 2, xs: 2 }}>
-          <Grid item md={12} lg={12} sm={12} xs={12}>
+          <Grid item md={6} lg={6} sm={12} xs={12}>
             <FormControl variant="outlined" sx={{ width: "100%" }}>
               <label
                 htmlFor="name"
@@ -145,107 +205,29 @@ const handleDescriptionChange =(data)=>{
           <Grid item md={6} lg={6} sm={12} xs={12}>
             <FormControl variant="outlined" sx={{ width: "100%" }}>
               <label
-                htmlFor="name"
-                style={{
-                  marginBottom: "15px",
-                }}
-              >
-                <Text fw="500" fs="16px" ml={5} color="#1A1A1A">
-                  Project Name
-                </Text>
-              </label>
-              <OutlinedInput
-                required
-                id="projectName"
-                type="text"
-                name="projectName"
-                value={payload.projectName}
-                onChange={handleChange}
-              />
-            </FormControl>
-          </Grid>
-          <Grid item md={6} lg={6} sm={12} xs={12}>
-            <FormControl variant="outlined" sx={{ width: "100%" }}>
-              <label
-                htmlFor="name"
-                style={{
-                  marginBottom: "15px",
-                }}
-              >
-                <Text fw="500" fs="16px" ml={5} color="#1A1A1A">
-                  Project Owner
-                </Text>
-              </label>
-              <OutlinedInput
-                required
-                id="projectOwner"
-                type="text"
-                name="projectOwner"
-                value={payload.projectOwner}
-                onChange={handleChange}
-              />
-            </FormControl>
-          </Grid>
-          <Grid item md={6} lg={6} sm={12} xs={12}>
-            <FormControl variant="outlined" sx={{ width: "100%" }}>
-              <label
                 htmlFor="team"
                 style={{
                   marginBottom: "15px",
                 }}
               >
                 <Text fw="500" fs="16px" ml={5} color="#1A1A1A">
-                  Add Team
+                  Assign Task
                 </Text>
               </label>
               <Select
                 labelId="team"
-                id="team"
+                fullWidth
+                name="team"
                 value={payload.team}
                 onChange={handleChange}
-                multiple
               >
-                <MenuItem value={10} sx={{ display:' flex', alignItems : 'center', gap : '10px' }}>
-                  <Avatar sx={{ height: "36px", width: "36px" }} />
-                  <Text fw="500" fs="16px">John Doe</Text>
-                </MenuItem>
-                  <Divider />
-                <MenuItem value={10} sx={{ display:' flex', alignItems : 'center', gap : '10px' }}>
-                  <Avatar sx={{ height: "36px", width: "36px" }} />
-                  <Text fw="500" fs="16px">John Doe</Text>
-                </MenuItem>
-                  <Divider />
-                <MenuItem value={10} sx={{ display:' flex', alignItems : 'center', gap : '10px' }}>
-                  <Avatar sx={{ height: "36px", width: "36px" }} />
-                  <Text fw="500" fs="16px">John Doe</Text>
-                </MenuItem>
-                  <Divider />
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item md={6} lg={6} sm={12} xs={12}>
-            <FormControl variant="outlined" sx={{ width: "100%" }}>
-              <label
-                htmlFor="status"
-                style={{
-                  marginBottom: "15px",
-                }}
-              >
-                <Text fw="500" fs="16px" ml={5} color="#1A1A1A">
-                  Task Status
-                </Text>
-              </label>
-              <Select
-                labelId="status"
-                id="status"
-                value={payload.status}
-                onChange={handleChange}
-              >
-                <MenuItem value={10}>Not Started</MenuItem>
-                <MenuItem value={10}>Completed</MenuItem>
-                <MenuItem value={10}>On-going</MenuItem>
-                <MenuItem value={10}>Completed</MenuItem>
-                
+                {project?.team
+                  // ?.filter((_team) => _team?.userId?._id !== user?._id)
+                  ?.map((_user, index) => (
+                    <MenuItem key={index} value={_user?.userId?._id}>
+                      {_user?.userId?.fullName}
+                    </MenuItem>
+                  ))}
               </Select>
             </FormControl>
           </Grid>
@@ -263,7 +245,7 @@ const handleDescriptionChange =(data)=>{
               </label>
               <CKEditor
                 editor={ClassicEditor}
-                data={payload?.note}
+                data={payload?.description}
                 onReady={(editor) => {
                   console.log("Editor is ready to use!", editor);
                 }}
@@ -297,14 +279,15 @@ const handleDescriptionChange =(data)=>{
           >
             Cancel
           </Button>
-          <Button
+          <LoadingButton
+            loading={creatingTask}
             sx={{ height: "44px", borderRadius: "10px" }}
             fullWidth
-            onClick={() => {}}
+            type="submit"
             variant="contained"
           >
-            Create Task
-          </Button>
+            Update Task
+          </LoadingButton>
         </Stack>
       </Box>
     </>

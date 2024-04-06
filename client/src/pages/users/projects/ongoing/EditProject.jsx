@@ -218,7 +218,7 @@ export default function EditProject() {
             <Button
               sx={{ height: "44px", borderRadius: "10px" }}
               fullWidth
-              onClick={() => {}}
+              onClick={() => navigate(-1)}
               variant="outlined"
             >
               Cancel
@@ -228,7 +228,6 @@ export default function EditProject() {
               loading={isCreating}
               sx={{ height: "44px", borderRadius: "10px" }}
               fullWidth
-              onClick={() => {}}
               variant="contained"
             >
               Save

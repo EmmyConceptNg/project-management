@@ -56,7 +56,6 @@ export const getTask = (req, res) => {
     .populate("team")
    
     .then((updatedTasks) => {
-      // Send back the updated tasks
       res.status(200).json({ task: updatedTasks });
     })
     .catch((error) => {
@@ -82,6 +81,41 @@ export const create = (req, res) => {
       const link = `${process.env.FRONTEND_URL}/dashboard/projects/ongoing/${milestoneId}/breakdown`;
       sendMail(user.email, "Task Assigned", TaskMail(user, milestone, link));
       res.status(200).json({ task: task, message: "Task added successfully" });
+    })
+    .catch((error) => {
+      res.status(500).json({ error: error });
+    });
+};
+
+export const update = (req, res) => {
+  const {taskId} = req.params;
+  const { name, startDate, endDate, team, description, milestoneId } = req.body;
+
+  Tasks.findOneAndUpdate({_id : taskId}, {
+    name,
+    startDate,
+    endDate,
+    team,
+    description,
+  }, {new: true, lean: true})
+    .then(async (task) => {
+      const user = await UserModel.findOne({ _id: team });
+      const milestone = await Milestone.findOne({ _id: milestoneId });
+      const link = `${process.env.FRONTEND_URL}/dashboard/projects/ongoing/${milestoneId}/breakdown`;
+      sendMail(user.email, "Task Re-assigned", TaskMail(user, milestone, link));
+      res.status(200).json({ task: task, message: "Task updated successfully" });
+    })
+    .catch((error) => {
+      res.status(500).json({ error: error });
+    });
+};
+
+export const destroy = (req, res) => {
+  const {taskId} = req.params;
+
+  Tasks.findOneAndDelete({_id : taskId})
+    .then(async (task) => {
+      res.status(200).json({ task: task, message: "Task deleted successfully" });
     })
     .catch((error) => {
       res.status(500).json({ error: error });
