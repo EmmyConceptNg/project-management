@@ -70,6 +70,8 @@ export default function Signup() {
   };
   const handleSignupGoogle = (values) => {
     setLoginBtn(true);
+    dispatch({ type: "LOGOUT" });
+    dispatch({ type: "REMOVE_WORKSPACE" });
     axios
       .post("/api/user/signup", values, {
         headers: { "Content-Type": "application/json" },

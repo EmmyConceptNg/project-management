@@ -151,7 +151,7 @@ export const acceptInvite = async (req, res) => {
     if (!userExists) {
       // If the user does not exist, redirect to a signup page
       return res.redirect(
-        `${process.env.FRONTEND_URL}/signup?workspace=${workspaceId}&email=${userEmail}`
+        `${process.env.FRONTEND_URL}?workspace=${workspaceId}&email=${userEmail}`
       );
     } else {
       // If the user exists, check if they are already in the workspace's team

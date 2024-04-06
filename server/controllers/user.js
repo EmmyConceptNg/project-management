@@ -112,7 +112,7 @@ export const signupUser = async (req, res) => {
 
     // Encrypt and hash the password
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await bcrypt.hash(password ?? 'Google12345', salt);
 
     // Create a new user
     const newUser = new UserModel({
