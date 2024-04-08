@@ -206,28 +206,6 @@ export default function CreateProjectModal({ open, setOpen, setRefresh }) {
                   style={{ minHeight: "100%" }}
                 />
               </FormControl>
-              {/* <FormControl>
-                <label htmlFor="team" style={{ marginBottom: "10px" }}>
-                  <Text fw="500" fs="16px" ml={5}>
-                    Add Team Members from Workspace
-                  </Text>
-                </label>
-                <Select
-                  labelId="team"
-                  size="small"
-                  fullWidth
-                  multiple
-                  name="team"
-                  value={payload.team}
-                  onChange={handleChange}
-                >
-                  {workspace?.team?.filter((_team) => _team?.userId?._id !== user?._id)?.map((t, index) =>(
-                    <MenuItem key={index} value={t?.userId?._id}>
-                      {t?.userId?.email}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl> */}
               <Stack
                 mt={5}
                 direction={{ md: "row", lg: "row", sm: "column", xs: "column" }}

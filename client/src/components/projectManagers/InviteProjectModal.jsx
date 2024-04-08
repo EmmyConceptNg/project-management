@@ -19,8 +19,8 @@ import { useNavigate } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
 import Dialog from "@mui/material/Dialog";
 import Text from "../utils/Text";
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "../../api/axios";
 import { notify } from "../../utils/utils";
 import { LoadingButton } from "@mui/lab";
@@ -36,13 +36,15 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 export default function InviteProjecteModal({ open, setOpen, refresh, project }) {
   const handleClose = () => setOpen(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [payload, setPayload] = useState({
     team: "",
   });
   const [btn, setBtn] = useState(false);
+  const [workspace, setWorkspace] = useState({})
 
-  const workspace = useSelector((state) => state.workspace);
+  const workspaceId = useSelector((state) => state.workspace._id);
   const user = useSelector((state) => state.user);
 
   const handleChange = (e) => {
@@ -50,6 +52,16 @@ export default function InviteProjecteModal({ open, setOpen, refresh, project })
     setPayload({ ...payload, [name]: value });
   };
 
+  useEffect(() => {
+    fetchWorkspace()
+  },[])
+
+  const fetchWorkspace = () => {
+    axios.get(`/api/workspace/get-workspace/${workspaceId}`).then((response) => {
+      dispatch({type: 'SET_WORKSPACE', payload: response.data.workspace});
+      setWorkspace(response.data.workspace);
+    });
+  };
 
   const inviteWorkspace = (e) => {
     setBtn(true);
