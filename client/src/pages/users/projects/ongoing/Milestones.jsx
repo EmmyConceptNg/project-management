@@ -77,27 +77,24 @@ export default function Milestones() {
           <IconButton sx={{ my: "auto" }} onClick={() => navigate(-1)}>
             <ArrowBackIos sx={{ color: "#1A1A1A" }} />
           </IconButton>
-          <Text fw="600" fs="22px">
-            Ongoing Projects
-          </Text>
+          <Box
+            my="auto"
+            display="flex"
+            alignItems="center"
+          >
+            {loading ? (
+              <ProjectLoader sx={{ height: "50px" }} />
+            ) : (
+              
+                <Text fw="600" fs="22px">
+                  {`Milestones - ${project?.name} `}
+                </Text>
+              
+            )}
+          </Box>
         </Box>
       </Box>
-      <Box
-        my={3}
-        borderBottom="1px solid #D9D9D9 "
-        display="flex"
-        alignItems="center"
-      >
-        {loading ? (
-          <ProjectLoader sx={{ height: "50px" }} />
-        ) : (
-          <Box mb={3} ml={7}>
-            <Text fw="600" fs="22px">
-              {`${project?.name} > Milestones`}
-            </Text>
-          </Box>
-        )}
-      </Box>
+      
 
       <Box mb={3} display="flex" justifyContent="flex-end">
         <Button

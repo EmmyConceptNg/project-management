@@ -95,26 +95,22 @@ const refresh = () => {
           <IconButton sx={{ my: "auto" }} onClick={() => navigate(-1)}>
             <ArrowBackIos sx={{ color: "#1A1A1A" }} />
           </IconButton>
-          <Text fw="600" fs="22px">
-            Ongoing Projects
-          </Text>
-        </Box>
-      </Box>
-      <Box
-        my={3}
-        borderBottom="1px solid #D9D9D9 "
-        display="flex"
-        alignItems="center"
-      >
-        {loading ? (
-          <ProjectLoader sx={{ height: "50px" }} />
-        ) : (
-          <Box mb={3} ml={7}>
-            <Text fw="600" fs="22px">
-              {`${project?.name} > Team Members`}
-            </Text>
+          <Box
+            my="auto"
+            display="flex"
+            alignItems="center"
+          >
+            {loading ? (
+              <ProjectLoader sx={{ height: "50px" }} />
+            ) : (
+              
+                <Text fw="600" fs="22px">
+                  {` Team Members - ${project?.name} `}
+                </Text>
+              
+            )}
           </Box>
-        )}
+        </Box>
       </Box>
 
       <Box mb={3} display="flex" justifyContent="flex-end">
@@ -234,10 +230,15 @@ const refresh = () => {
                               size="small"
                               labelId="demo-simple-select-label"
                               id="demo-simple-select"
-                              value={team.role} onChange={(e)=>setTeamRole(e, team.userId._id)}
+                              value={team.role}
+                              onChange={(e) => setTeamRole(e, team.userId._id)}
                             >
-                              <MenuItem value="project manager">project manager</MenuItem>
-                              <MenuItem value="team member">team member</MenuItem>
+                              <MenuItem value="project manager">
+                                project manager
+                              </MenuItem>
+                              <MenuItem value="team member">
+                                team member
+                              </MenuItem>
                             </Select>
                           </FormControl>
                         </TableCell>
@@ -279,10 +280,8 @@ const refresh = () => {
                             whiteSpace: "nowrap",
                           }}
                         >
-                          {team.projectSpecialityClass}
+                          -
                         </TableCell>
-
-                       
                       </TableRow>
                     ))}
               </TableBody>

@@ -12,7 +12,7 @@ import {
   Stack,
 } from "@mui/material";
 import Text from "../../../../components/utils/Text";
-import { MoreVert } from "@mui/icons-material";
+import { Add, MoreVert } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import EditTaskModal from "../../../../components/projectManagers/EditTaskModal";
@@ -99,11 +99,22 @@ export default function Ongoing() {
         mb={5}
         display="flex"
         alignItems="center"
+        justifyContent="space-between"
       >
         <Box>
           <Text fw="600" fs="22px" sx={{ marginBottom: "20px" }}>
             Ongoing Projects
           </Text>
+        </Box>
+        <Box>
+          <Button
+            variant="contained"
+            onClick={() => setOpenCreateModal(true)}
+            startIcon={<Add />}
+            sx={{ borderRadius: "10px", marginBottom: "20px" }}
+          >
+            Create New Project
+          </Button>
         </Box>
       </Box>
       <Box>
@@ -172,18 +183,7 @@ export default function Ongoing() {
                         >
                           View Project
                         </Text>
-                        <Divider sx={{ my: 1 }} />
-                        <Text
-                          fw="500"
-                          fs="18px"
-                          color="#1a1a1a"
-                          sx={{ cursor: "pointer" }}
-                          onClick={() => {
-                            navigate(`${item._id}/create`);
-                          }}
-                        >
-                          Add Task
-                        </Text>
+
                         <Divider sx={{ my: 1 }} />
                         <Text
                           fw="500"
@@ -213,7 +213,7 @@ export default function Ongoing() {
                           fs="18px"
                           color="#1a1a1a"
                           sx={{ cursor: "pointer" }}
-                          onClick={() => handleInvitePeople(item) }
+                          onClick={() => handleInvitePeople(item)}
                         >
                           Invite People
                         </Text>

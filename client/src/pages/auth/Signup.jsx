@@ -245,21 +245,6 @@ export default function Signup() {
                 >
                   Sign up with Google
                 </Button>
-                <Box
-                  mt={2}
-                  borderRadius="10px"
-                  width="100%"
-                  height="44px"
-                  border="1px solid #D9D9D9"
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                >
-                  <Box component="img" src="assets/icons/apple.svg" />
-                  <Text fw="500" fs="16px" ml={5}>
-                    Continue with apple
-                  </Text>
-                </Box>
               </Box>
               <Box display="flex" justifyContent={"center"}>
                 <Text sx={{ textAlign: "center" }}>

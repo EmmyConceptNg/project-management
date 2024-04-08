@@ -247,21 +247,6 @@ export default function Login() {
                   Sign in with Google
                 </Button>
               </Box>
-                <Box
-                  mt={2}
-                  borderRadius="10px"
-                  width="100%"
-                  height="44px"
-                  border="1px solid #D9D9D9"
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                >
-                  <Box component="img" src="assets/icons/apple.svg" />
-                  <Text fw="500" fs="16px" ml={5}>
-                    Continue with apple
-                  </Text>
-                </Box>
               </Box>
               <Box display="flex" justifyContent={"center"}>
                 <Text sx={{ textAlign: "center" }}>Don't have an account?</Text>

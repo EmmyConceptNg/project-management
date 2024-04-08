@@ -67,24 +67,16 @@ export default function OngoingDetails() {
           <IconButton sx={{ my: "auto" }} onClick={() => navigate(-1)}>
             <ArrowBackIos sx={{ color: "#1A1A1A" }} />
           </IconButton>
-          <Text fw="600" fs="22px">
-            Ongoing Projects
-          </Text>
+          
+            <Box my="auto">
+              <Text fw="600" fs="22px">
+                Project Details
+              </Text>
+            </Box>
+          
         </Box>
       </Box>
-      <Box
-        mt={3}
-        ml={7}
-        borderBottom="1px solid #D9D9D9 "
-        display="flex"
-        alignItems="center"
-      >
-        <Box mb={3}>
-          <Text fw="600" fs="22px">
-            {`${project?.name ?? ""} > Project Details`}
-          </Text>
-        </Box>
-      </Box>
+
       <Box border="1px solid #D9D9D9" borderRadius="8px">
         <Box
           mt={3}

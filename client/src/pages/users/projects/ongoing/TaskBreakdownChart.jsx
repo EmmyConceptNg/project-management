@@ -48,35 +48,40 @@ export default function TaskBreakdownChart() {
 
   const navigate = useNavigate();
 
-  const transformTasksForGantt = (tasks) =>
-    tasks
-      .map((task) => {
-        if (!task.startDate || !task.endDate) {
-          console.error("Task has missing start or end date:", task);
-          return null;
-        }
+const transformTasksForGantt = (tasks) =>
+  tasks
+    .map((task) => {
+      // Ensure task.startDate and task.endDate are not null or undefined
+      if (!task.startDate || !task.endDate) {
+        console.error("Task has missing start or end date:", task);
+        return null;
+      }
 
-        const startDate = moment(task.startDate, "YYYY, M, D").toDate();
-        const endDate = moment(task.endDate, "YYYY, M, D").toDate();
+      // Directly use the ISO 8601 date strings to create Date objects
+      const startDate = new Date(task.startDate);
+      const endDate = new Date(task.endDate);
 
-        console.log(endDate);
-        console.log(task.complete);
+      // Additional check to ensure dates are valid
+      if (isNaN(startDate) || isNaN(endDate)) {
+        console.error("Task has invalid start or end date:", task);
+        return null;
+      }
 
-        return {
-          start: startDate,
-          end: endDate,
-          name: task.name,
-          id: `Task ${task._id}`,
-          type: "task",
-          progress: task.complete,
-          styles: {
-            progressColor: "#ffbb54",
-            progressSelectedColor: "#ff9e0d",
-          },
-        };
-      })
-      .filter((task) => task !== null); // Filter out tasks with invalid dates
-
+      return {
+        start: startDate,
+        end: endDate,
+        name: task.name,
+        id: `Task ${task._id}`,
+        type: "task",
+        progress: task.complete || 0, // making sure progress is a number, default to 0 if undefined
+        styles: {
+          progressColor: "#ffbb54",
+          progressSelectedColor: "#ff9e0d",
+        },
+      };
+    })
+    .filter((task) => task !== null);
+    
   return (
     <>
       <Box
@@ -90,26 +95,19 @@ export default function TaskBreakdownChart() {
             <ArrowBackIos sx={{ color: "#1A1A1A" }} />
           </IconButton>
           <Text fw="600" fs="22px">
-            Ongoing Projects
+            <Box my="auto" display="flex" alignItems="center">
+              {loading ? (
+                <ProjectLoader sx={{ height: "50px" }} />
+              ) : (
+                <Text fw="600" fs="22px">
+                  {`Gantt Chart - ${project?.name} `}
+                </Text>
+              )}
+            </Box>
           </Text>
         </Box>
       </Box>
-      <Box
-        my={3}
-        borderBottom="1px solid #D9D9D9 "
-        display="flex"
-        alignItems="center"
-      >
-        {loading ? (
-          <ProjectLoader sx={{ height: "50px" }} />
-        ) : (
-          <Box mb={3} ml={7}>
-            <Text fw="600" fs="22px">
-              {`${project?.name} > Gantt Chart`}
-            </Text>
-          </Box>
-        )}
-      </Box>
+
       <Box>
         <Box
           bgcolor="#fff"
@@ -127,15 +125,26 @@ export default function TaskBreakdownChart() {
           }}
         >
           {!loading
-            ? milestones.map((milestone) => (
-                <GanttChartComponent
-                  key={milestone._id}
-                  tasks={transformTasksForGantt(milestone.tasks || [])}
-                />
-              ))
+            ? milestones
+                .filter(
+                  (milestone) => milestone.tasks && milestone.tasks.length > 0
+                )
+                .map((milestone) => (
+                  <>
+                    <Text fs="16px" fw="600" mb={5}>
+                      {milestone.name}
+                    </Text>
+                    <GanttChartComponent
+                      key={milestone._id}
+                      tasks={transformTasksForGantt(milestone.tasks)}
+                    />
+                  </>
+                ))
             : Array(5)
                 .fill()
-                .map((item) => <ProjectLoader key={item} sx={{ height: "50px" }} />)}
+                .map((_, index) => (
+                  <ProjectLoader key={index} sx={{ height: "50px" }} />
+                ))}
 
           <Box mt={3}>
             {!loading && !milestones?.length > 0 && (
