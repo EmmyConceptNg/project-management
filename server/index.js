@@ -31,6 +31,9 @@ const envFile =
   dotenv.config({ path: envFile });
 
 /* ROUTES */
+app.get('/', (req, res)=>{
+  res.status(200).json({message : "Welcome to project management server"})
+})
 app.use("/api/projects", projectRoutes);
 app.use("/api/general", generalRoutes);
 app.use("/api/settings", settingsRoutes);
