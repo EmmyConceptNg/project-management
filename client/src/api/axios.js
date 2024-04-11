@@ -5,7 +5,7 @@ let baseURL = "";
 if (window.location.origin.includes("localhost")) {
   baseURL = "http://localhost:9000";
 } else {
-  baseURL = "https://nathan-project-mgt.onrender.com";
+  baseURL = "https://project-management-0s5a.onrender.com";
 }
 
 export default axios.create({
