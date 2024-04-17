@@ -79,9 +79,9 @@ export default function CreateProjectModal({ open, setOpen, setRefresh }) {
       })
       .then((response) => {
         notify("project created successfully", "success");
-        handleClose();
-        setRefresh(true)
         navigate("/dashboard/projects/ongoing");
+        setRefresh(true)
+        handleClose();
 
       })
       .catch((error) => {
