@@ -34,7 +34,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     padding: theme.spacing(1),
   },
 }));
-export default function CreateProjectModal({ open, setOpen, setRefresh }) {
+export default function CreateProjectModal({ open, setOpen, refresh }) {
   const [register, setRegister] = useState(false);
   const handleClose = () => setOpen(false);
   const navigate = useNavigate();
@@ -77,17 +77,18 @@ export default function CreateProjectModal({ open, setOpen, setRefresh }) {
           "Content-Type": "application/json",
         },
       })
-      .then((response) => {
-        notify("project created successfully", "success");
+      .then(() => {
+        refresh();
         navigate("/dashboard/projects/ongoing");
-        setRefresh(true)
+        notify("project created successfully", "success");
         handleClose();
+       
 
       })
       .catch((error) => {
         notify(error?.response?.data?.error, "error");
         setIsCreating(false);
-      });
+      }).finally(() => {  setIsCreating(false);});
   };
   return (
     <>

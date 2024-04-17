@@ -5,13 +5,13 @@ export const MenuItems = [
     icon: "radix-icons:dashboard",
     link: "/dashboard/app",
   },
-  {
-    id: "project-new",
-    name: "Create New Project",
-    icon: "uil:folder-plus",
-    link: "/dashboard/projects/create",
-    modal: true,
-  },
+  // {
+  //   id: "project-new",
+  //   name: "Create New Project",
+  //   icon: "uil:folder-plus",
+  //   link: "/dashboard/projects/ongoing",
+  //   // modal: true,
+  // },
   {
     id: "projects",
     name: "Projects",

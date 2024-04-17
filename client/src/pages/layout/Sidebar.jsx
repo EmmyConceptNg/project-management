@@ -15,6 +15,7 @@ import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import CreateProjectModal from "../../components/modal/CreateProjectModal";
 import Workspace from "../../components/layout/Workspace";
 import { useSelector } from "react-redux";
+import axios from "../../api/axios";
 
 export const Sidebar = () => {
   const [open, setOpen] = useState(true);
@@ -31,7 +32,10 @@ export const Sidebar = () => {
    }
  };
 
+
  const workspace = useSelector((state) => state.workspace);
+
+
 
   return (
     <>
@@ -149,7 +153,7 @@ export const Sidebar = () => {
           </Box>
         </Box>
       </Box>
-      <CreateProjectModal open={openModal} setOpen={setOpenModal} />
+      {/* <CreateProjectModal open={openModal} setOpen={setOpenModal} refresh={() => {location.reload}}/> */}
     </>
   );
 };

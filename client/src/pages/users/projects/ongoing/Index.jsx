@@ -50,7 +50,7 @@ export default function Ongoing() {
   const [pageLoading, setPageLoading] = useState(true);
   const [projects, setProjects] = useState([]);
   const [openCreateModal, setOpenCreateModal] = useState(false);
-  const [refresh, setRefresh] = useState(false);
+  
   const [selectedProject, setSelectedProject] = useState(null);
 
   const markComplete = (projectId) => {
@@ -82,9 +82,10 @@ export default function Ongoing() {
 
   useEffect(() => {
     getProject();
-  }, [workspace, setProjects, refresh]);
+  }, [workspace, setProjects]);
 
   const getProject = () => {
+    console.log('dd');
     setPageLoading(true);
     axios.get(`/api/projects/${workspace?._id}/ongoing`).then((response) => {
       setProjects(response.data.projects);
@@ -345,7 +346,7 @@ export default function Ongoing() {
       <CreateProjectModal
         open={openCreateModal}
         setOpen={setOpenCreateModal}
-        setRefresh={setRefresh}
+        refresh={getProject}
       />
     </>
   );
