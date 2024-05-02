@@ -31,12 +31,22 @@ export default function ForgotPass2() {
 
   const {token} = useParams()
   const navigate = useNavigate();
+
+
+  const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+ 
+  
   const handleChange = (e) => {
+    const { name, value } = e.target;
+
+
+    // Update the state
     setPayload({
       ...payload,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
   };
+
 
   
 
@@ -66,6 +76,17 @@ export default function ForgotPass2() {
     if(payload.password !== payload.confirmPassword) {
       notify('Password Mismatch', 'error')
       return false;
+    }
+
+
+    if (!passwordRegex.test(payload.password)) {
+      // Password does not meet the criteria, notify the user
+      notify(
+        "Password should include a number, a lowercase, and an uppercase character, and be 6-20 characters long.",
+        "error"
+      );
+
+      return false
     }
 
     setLoginBtn(true);
@@ -134,6 +155,28 @@ const updatedPayload = {newPassword : payload.password, resetToken : token}
                       label="Password"
                     />
                   </FormControl>
+                  {/* Password validation text */}
+                  {payload.password && passwordRegex.test(payload.password) ? (
+                    <Text
+                      sx={{
+                        color: "green",
+                        marginTop: "5px",
+                      }}
+                    >
+                      Strong Password
+                    </Text>
+                  ) : (
+                    <Text
+                      sx={{
+                        color: "red",
+                        marginTop: "5px",
+                      }}
+                    >
+                      Password should include a number, a lowercase, and an
+                      uppercase character, and be 6-20 characters long.
+                    </Text>
+                  )}
+
                   <FormControl variant="outlined" sx={{ width: "100%" }}>
                     <InputLabel htmlFor="confirm-password">
                       Confirm Password
