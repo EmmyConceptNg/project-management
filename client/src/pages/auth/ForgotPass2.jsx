@@ -10,7 +10,7 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Text from "../../components/utils/Text";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
@@ -28,6 +28,8 @@ export default function ForgotPass2() {
     password: "",
     confirmPassword: "",
   });
+
+  const {token} = useParams()
   const navigate = useNavigate();
   const handleChange = (e) => {
     setPayload({
@@ -60,20 +62,23 @@ export default function ForgotPass2() {
 
   const handleChangePassword = (e) => {
     e.preventDefault();
-      navigate("/workspace");
-    setLoginBtn(true);
 
+    if(payload.password !== payload.confirmPassword) {
+      notify('Password Mismatch', 'error')
+      return false;
+    }
+
+    setLoginBtn(true);
+const updatedPayload = {newPassword : payload.password, resetToken : token}
     axios
-      .post("/api/auth/login", payload, {
+      .post("/api/user/reset-password", updatedPayload, {
         headers: { "Content-Type": "application/json" },
       })
       .then((response) => {
-        dispatch({ type: "SET_USER", payload: response.data.user });
-        if (response.data.user.role === "admin") {
-          navigate("/admin");
-        } else {
+        notify(response?.data?.message, "success");
+        
           navigate("/dashboard");
-        }
+        
       })
       .catch((error) => {
         notify(error?.response?.data?.error, "error");
@@ -83,6 +88,7 @@ export default function ForgotPass2() {
 
   return (
     <Box>
+      <ToastContainer />
       <Grid container spacing={1} justifyContent="space-between">
         <Grid item md={6} lg={6} xs={12} sm={12}>
           <Box display="flex" height={"100vh"}>
@@ -166,7 +172,7 @@ export default function ForgotPass2() {
                     color="primary"
                     sx={{ textTransform: "capitalize" }}
                   >
-                    Save
+                    Change Password
                   </LoadingButton>
                 </Stack>
               </Box>

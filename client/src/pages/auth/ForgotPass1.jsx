@@ -39,27 +39,23 @@ export default function ForgotPass1() {
     });
   };
 
-  const handleLogin = (e) => {
+  const handleEmailLink = (e) => {
     e.preventDefault();
-    navigate('/change-password')
     setLoginBtn(true);
 
     axios
-      .post("/api/auth/login", payload, {
+      .post("/api/user/forgot-password", payload, {
         headers: { "Content-Type": "application/json" },
       })
-      .then((response) => {
-        dispatch({ type: "SET_USER", payload: response.data.user });
-        if (response.data.user.role === "admin") {
-          navigate("/admin");
-        } else {
-          navigate("/dashboard");
-        }
+      .then(() => {
+        notify('A password reset link has been forwarded to your mail', "success");
       })
       .catch((error) => {
         notify(error?.response?.data?.error, "error");
         setLoginBtn(false);
-      });
+      }).finally(() =>{
+        setLoginBtn(false);
+      })
   };
 
   return (
@@ -79,7 +75,7 @@ export default function ForgotPass1() {
                 Enter your email that you used at time of account setup to
                 recover account
               </Text>
-              <Box component="form" onSubmit={handleLogin}>
+              <Box component="form" onSubmit={handleEmailLink}>
                 <Stack
                   spacing={2}
                   mt={5}

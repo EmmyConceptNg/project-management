@@ -7,6 +7,8 @@ import Workspace from "../models/workspace.js";
 import { accessSync } from "fs";
 import path from "path";
 import fs from "fs";
+import { passwordResetMail } from "../pages/passwordResetMail.js";
+import { sendMail } from "./Mail.js";
 
 // login user
 export const loginUser = async (req, res) => {
@@ -169,7 +171,16 @@ export const forgotpassword = async (req, res) => {
     user.resetToken = resetToken;
     user.resetTokenExpiration = Date.now() + 3600000; // Token expires in 1 hour
     console.log(user.resetToken);
+
     await user.save();
+
+    const link = `${process.env.FRONTEND_URL}/change-password/${resetToken}`;
+
+    sendMail(
+      email,
+      "Reset Password",
+      passwordResetMail(user, link)
+    );
     res.status(200).json({ message: "Password reset token sent" });
   } catch (error) {
     console.error("Error generating reset token:", error);
@@ -219,7 +230,7 @@ export const verifyUser = async (req, res) => {
 
     // check the user existance
     let user = await UserModel.findOne({ email: email });
-    if (!user) return res.status(404).send({ error: "User does not exist" });
+    if (!user) return res.status(404).json({ error: "User does not exist" });
 
     // Retrieve the stored OTP from Redis, using the user's email as the key
     const storedOTP = user.otp;

@@ -3,34 +3,39 @@ import bcrypt from "bcrypt";
 
 const Schema = mongoose.Schema;
 
-const userSchema = new Schema({
-  fullName: String,
-  industry: String,
-  timeZone : String,
-  phone : String,
-  image : String,
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    match: [/.+\@.+\..+/, "Please fill a valid email address"],
+const userSchema = new Schema(
+  {
+    fullName: String,
+    industry: String,
+    timeZone: String,
+    phone: String,
+    image: String,
+    resetToken: String,
+    resetTokenExpiration: Date,
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      match: [/.+\@.+\..+/, "Please fill a valid email address"],
+    },
+
+    password: {
+      type: String,
+      required: true,
+    },
+    otp: {
+      type: String,
+      required: true,
+      expires: 60 * 1,
+    },
+    isVerified: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
   },
-   
-  password: {
-    type: String,
-    required: true,
-  },
-  otp: {
-    type: String,
-    required: true,
-    expires: 60 * 1,
-  },
-  isVerified: {
-    type: Boolean,
-    required: true,
-    default: false,
-  },
-},{timestamps: true});
+  { timestamps: true }
+);
 
 // // static signup method
 // userSchema.statics.signup = async function (email, password) {

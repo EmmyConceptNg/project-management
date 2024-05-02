@@ -30,7 +30,7 @@ export const Router = () => {
       element: <ForgotPass1 />,
     },
     {
-      path: "/change-password",
+      path: "/change-password/:token",
       element: <ForgotPass2 />,
     },
   ]);
