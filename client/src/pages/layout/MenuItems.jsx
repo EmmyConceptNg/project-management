@@ -5,13 +5,7 @@ export const MenuItems = [
     icon: "radix-icons:dashboard",
     link: "/dashboard/app",
   },
-  // {
-  //   id: "project-new",
-  //   name: "Create New Project",
-  //   icon: "uil:folder-plus",
-  //   link: "/dashboard/projects/ongoing",
-  //   // modal: true,
-  // },
+
   {
     id: "projects",
     name: "Projects",
@@ -19,8 +13,15 @@ export const MenuItems = [
 
     group: [
       {
+        id: "project-new",
+        name: "Create New Project",
+        icon: "uil:folder-plus",
+        link: "/dashboard/projects/ongoing?create=true",
+        // modal: true,
+      },
+      {
         id: "ongoing",
-        name: "On-going",
+        name: "In-Progress",
         link: "/dashboard/projects/ongoing",
       },
       {

@@ -24,10 +24,22 @@ import moment from "moment";
 import CreateProjectModal from "../../../../components/modal/CreateProjectModal";
 import ProjectLoader from "../../../../components/utils/ProjectLoader";
 import InviteProjecteModal from "../../../../components/projectManagers/InviteProjectModal";
+import { useSearchParams } from "react-router-dom";
+import ProjectTable from "./ProjectTable";
 
 export default function Ongoing() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(null);
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    // Check if the 'create' query parameter is present and is equal to 'true'
+    if (searchParams.get("create") === "true") {
+      setOpenCreateModal(true);
+    }
+
+    // Other effect logic here
+  }, [searchParams]);
 
   const handleClick = (event, index) => {
     setAnchorEl(event.currentTarget);
@@ -104,7 +116,7 @@ export default function Ongoing() {
       >
         <Box>
           <Text fw="600" fs="22px" sx={{ marginBottom: "20px" }}>
-            Ongoing Projects
+            In Progress
           </Text>
         </Box>
         <Box>
@@ -119,193 +131,16 @@ export default function Ongoing() {
         </Box>
       </Box>
       <Box>
-        <Grid
-          container
-          spacing={{ md: 2, lg: 2, sm: 1, xs: 1 }}
-          direction="row"
-          justify="flex-start"
-          alignItems="flex-start"
-          alignContent="stretch"
-        >
-          {pageLoading &&
-            Array(20)
-              .fill()
-              .map((arr, index) => (
-                <Grid item md={4} lg={4} sm={6} xs={12} key={index}>
-                  <ProjectLoader sx={{ height: "264px" }} />
-                </Grid>
-              ))}
-          {!pageLoading &&
-            projects.map((item) => (
-              <Grid item md={4} lg={4} sm={6} xs={12} key={item._id}>
-                <Box
-                  bgcolor="#fff"
-                  border="1px solid #D9D9D9"
-                  borderRadius="8px"
-                  height="264px"
-                  px={2}
-                  py={1.5}
-                  sx={{
-                    cursor: "pointer",
-                  }}
-                >
-                  <Stack direction="row" justifyContent="space-between">
-                    <Text fw="500" fs="18px" color="#1a1a1a">
-                      {item?.name}
-                    </Text>
-                    <IconButton
-                      onClick={(event) => handleClick(event, item._id)}
-                    >
-                      <MoreVert />
-                    </IconButton>
-                    <Popover
-                      id={id}
-                      open={open && selectedIndex === item._id}
-                      anchorEl={anchorEl}
-                      onClose={handleClose}
-                      anchorOrigin={{
-                        vertical: "bottom",
-                        horizontal: "right",
-                      }}
-                      transformOrigin={{
-                        vertical: "top",
-                        horizontal: "right",
-                      }}
-                    >
-                      <Box p={2}>
-                        <Text
-                          fw="500"
-                          fs="18px"
-                          color="#1a1a1a"
-                          sx={{ cursor: "pointer" }}
-                          onClick={() => {
-                            navigate(`${item._id}`);
-                          }}
-                        >
-                          View Project
-                        </Text>
 
-                        <Divider sx={{ my: 1 }} />
-                        <Text
-                          fw="500"
-                          fs="18px"
-                          color="#1a1a1a"
-                          sx={{ cursor: "pointer" }}
-                          onClick={() => {
-                            navigate(`${item._id}/edit-project`);
-                          }}
-                        >
-                          Edit Project
-                        </Text>
-                        <Divider sx={{ my: 1 }} />
-                        <Text
-                          fw="500"
-                          fs="18px"
-                          color="#1a1a1a"
-                          sx={{ cursor: "pointer" }}
-                          onClick={() => handleEditTask(item)}
-                        >
-                          Rename Project
-                        </Text>
-
-                        <Divider sx={{ my: 1 }} />
-                        <Text
-                          fw="500"
-                          fs="18px"
-                          color="#1a1a1a"
-                          sx={{ cursor: "pointer" }}
-                          onClick={() => handleInvitePeople(item)}
-                        >
-                          Invite People
-                        </Text>
-                        <Divider sx={{ my: 1 }} />
-                        <Text
-                          fw="500"
-                          fs="18px"
-                          color="#1a1a1a"
-                          sx={{ cursor: "pointer" }}
-                          onClick={() => markComplete(item._id)}
-                        >
-                          Mark Complete
-                        </Text>
-                      </Box>
-                    </Popover>
-                  </Stack>
-                  <Box>
-                    <Text fw="500" fs="12px" color="#1a1a1a">
-                      Project Owner: {item.owner.fullName}
-                    </Text>
-                    <Text fw="500" fs="12px" color="#1a1a1a">
-                      Project Manager: {item.manager}
-                    </Text>
-                  </Box>
-                  <Box my={2}>
-                    <Stack direction="row" spacing={5}>
-                      <Box>
-                        <Text fw="500" fs="12px" color="#1a1a1a">
-                          Start Date
-                        </Text>
-                        <Text fw="500" fs="14px" color="#1a1a1a">
-                          {moment(item.startDate).format("MMM Do YYYY")}
-                        </Text>
-                      </Box>
-                      <Box>
-                        <Text fw="500" fs="12px" color="#1a1a1a">
-                          End Date
-                        </Text>
-                        <Text fw="500" fs="14px" color="#1a1a1a">
-                          {moment(item.endDate).format("MMM Do YYYY")}
-                        </Text>
-                      </Box>
-                    </Stack>
-                  </Box>
-                  <Box>
-                    <LinearProgress
-                      color="success"
-                      variant="determinate"
-                      value={item.progress}
-                    />
-                    <Stack
-                      direction="row"
-                      justifyContent="space-between"
-                      mt="4px"
-                    >
-                      <Text fw="500" fs="10px" color="#1a1a1a">
-                        Progress
-                      </Text>
-                      <Text fw="500" fs="10px" color="#1a1a1a">
-                        {`${item.progress}%`}
-                      </Text>
-                    </Stack>
-                  </Box>
-                  <Box my={1}>
-                    <Text fw="500" fs="12px" color="#1a1a1a">
-                      {`${item.team.length} Team Members`}
-                    </Text>
-                    <Box display="flex" mt="2px">
-                      <AvatarGroup alignItems="flex-start">
-                        {item.team.map((member) => (
-                          <Avatar
-                            key={member?._id}
-                            sx={{ width: "24px", height: "24px" }}
-                            alt={member?.fullName || member?.userEmail}
-                            src="/static/images/avatar/1.jpg"
-                          />
-                        ))}
-                      </AvatarGroup>
-                    </Box>
-                  </Box>
-                  <Box>
-                    <Text fw="500" fs="10px" color="#1a1a1a">
-                      {`Last Updated By ${item.updatedBy ?? ""}: ${moment(
-                        item.updatedAt
-                      ).format("MMM Do YYYY")}`}
-                    </Text>
-                  </Box>
-                </Box>
-              </Grid>
-            ))}
-        </Grid>
+        <ProjectTable
+          
+          projects={projects}
+          setProjects={setProjects}
+          loading={pageLoading}
+          setLoading={setPageLoading}
+          getProject={getProject}
+          
+        />
         {!projects.length && (
           <Box
             display="flex"

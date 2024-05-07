@@ -51,11 +51,11 @@ const [project, setProject] = useState([])
         alignItems="center"
       >
         <Box display={"flex"} gap={2} alignItems="center" sx={{ mb: "20px" }}>
-          <IconButton sx={{ my: "auto" }} onClick={() => navigate(-1)}>
+          <IconButton sx={{ my: "auto" }} onClick={() => navigate('/dashboard/projects/ongoing')}>
             <ArrowBackIos sx={{ color: "#1A1A1A" }} />
           </IconButton>
           <Text fw="600" fs="22px">
-            Ongoing Projects
+            In Progress
           </Text>
         </Box>
       </Box>

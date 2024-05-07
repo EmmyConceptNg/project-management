@@ -15,7 +15,7 @@ import { Sidebar } from "./Sidebar";
 import { useSelector } from "react-redux";
 
 export const FullLayout = () => {
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(true);
   const [isClosing, setIsClosing] = useState(false);
   const navigate = useNavigate()
   const user = useSelector(state => state.user)
@@ -64,7 +64,7 @@ export const FullLayout = () => {
               keepMounted: true, // Better open performance on mobile.
             }}
             sx={{
-              display: { xs: "block", sm: "block", md: "none" },
+              // display: { xs: "block", sm: "block", md: "none" },
               "& .MuiDrawer-paper": {
                 boxSizing: "border-box",
                 width: drawerWidth,
@@ -73,7 +73,7 @@ export const FullLayout = () => {
           >
             <Sidebar />
           </Drawer>
-          <Drawer
+          {/* <Drawer
             variant="permanent"
             sx={{
               display: { xs: "none", sm: "none", md: "flex", lg: "flex" },
@@ -85,11 +85,13 @@ export const FullLayout = () => {
             open
           >
             <Sidebar />
-          </Drawer>
+          </Drawer> */}
         </Box>
         <Box
           sx={{
-            width: { md: `calc(100% - ${drawerWidth}px)` },
+            width: {
+              md: mobileOpen ? `calc(100% - ${drawerWidth}px) ` : "100%",
+            },
           }}
         >
           <CssBaseline />
@@ -97,7 +99,9 @@ export const FullLayout = () => {
             position="fixed"
             sx={{
               zIndex: (theme) => theme.zIndex.drawer + 1,
-              width: { md: `calc(100% - ${drawerWidth}px)` },
+              width: {
+                md: mobileOpen ? `calc(100% - ${drawerWidth}px)` : "100%",
+              },
               height: "74px",
               ml: { sm: `${drawerWidth}px` },
               backgroundColor: "#fff",
@@ -111,21 +115,21 @@ export const FullLayout = () => {
                 aria-label="open drawer"
                 edge="start"
                 onClick={handleDrawerToggle}
-                sx={{ mr: 2, display: { sm: "none" } }}
+                // sx={{ mr: 2, display: { sm: "none" } }}
               >
-                <Menu sx={{ color:"#000" }} />
+                <Menu sx={{ color: "#000" }} />
               </IconButton>
               <Box sx={{ flexGrow: 1 }} />
               <Nav />
             </Toolbar>
           </AppBar>
           <Box
-            
             sx={{
               paddingTop: "114px", // Adjusted padding to account for app bar height
               minHeight: "calc(100vh - 74px)", // Adjusted to exclude app bar height
-              ml: { md: `${drawerWidth}px` },
-              minWidth : '100%', px: {md :4, lg:4, sm : 2, xs :1}
+              ml: { md: mobileOpen ? `${drawerWidth}px` : 0 },
+              minWidth: "100%",
+              px: { md: 4, lg: 4, sm: 2, xs: 1 },
             }}
           >
             {/* ------------------------------------------- */}

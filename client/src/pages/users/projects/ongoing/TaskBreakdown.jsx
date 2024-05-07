@@ -90,7 +90,7 @@ export default function TaskBreakdown() {
             <ArrowBackIos sx={{ color: "#1A1A1A" }} />
           </IconButton>
           <Text fw="600" fs="22px">
-            Ongoing Projects
+            In Progress
           </Text>
         </Box>
       </Box>

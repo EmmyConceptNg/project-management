@@ -24,7 +24,7 @@ import { notify } from "../../utils/utils";
 import axios from "../../api/axios";
 import { useSelector } from "react-redux";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import ClassicEditor from "ckeditor5-build-classic-mathtype";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -78,10 +78,10 @@ export default function CreateProjectModal({ open, setOpen, refresh }) {
         },
       })
       .then(() => {
-        refresh();
-        navigate("/dashboard/projects/ongoing");
-        notify("project created successfully", "success");
+        // notify("project created successfully", "success");
         handleClose();
+        // refresh();
+        navigate("/dashboard/projects/ongoing");
        
 
       })
@@ -126,54 +126,6 @@ export default function CreateProjectModal({ open, setOpen, refresh }) {
                   type="text"
                   name="name"
                   value={payload.name}
-                  onChange={handleChange}
-                />
-              </FormControl>
-              <FormControl variant="outlined" sx={{ width: "100%" }}>
-                <label
-                  htmlFor="startDate"
-                  style={{
-                    marginBottom: "15px",
-                    display: "flex",
-                  }}
-                >
-                  <Text fw="500" fs="16px" ml={5} color="#1A1A1A">
-                    Start Date
-                  </Text>
-                </label>
-                <OutlinedInput
-                  required
-                  id="startDate"
-                  name="startDate"
-                  type="date"
-                  value={payload.startDate}
-                  inputProps={{
-                    min: today,
-                  }}
-                  onChange={handleChange}
-                />
-              </FormControl>
-              <FormControl variant="outlined" sx={{ width: "100%" }}>
-                <label
-                  htmlFor="endDate"
-                  style={{
-                    marginBottom: "15px",
-                    display: "flex",
-                  }}
-                >
-                  <Text fw="500" fs="16px" ml={5} color="#1A1A1A">
-                    End Date
-                  </Text>
-                </label>
-                <OutlinedInput
-                  required
-                  id="endDate"
-                  name="endDate"
-                  type="date"
-                  value={payload.endDate}
-                  inputProps={{
-                    min: today,
-                  }}
                   onChange={handleChange}
                 />
               </FormControl>

@@ -51,13 +51,13 @@ export const Dashboard = () =>{
               {
                 icon: "material-symbols:account-balance-wallet",
                 color: "#744BAB",
-                name: "Total Ongoing Projects",
+                name: "Total Projects In Progress",
                 count: `${dash.ongoingProjects}`,
               },
               {
                 icon: "material-symbols:account-balance-wallet",
                 color: "#FFB849",
-                name: "Total Ongoing Tasks",
+                name: "Total Tasks In Progress",
                 count: `${dash.ongoingTasks}`,
               },
               {
@@ -112,7 +112,7 @@ export const Dashboard = () =>{
 
           <Box my={4}>
             <Text fw="500" fs="24px" color="#000">
-              Task for Today
+              Upcoming Milestones & Tasks in the next 2 weeks
             </Text>
           </Box>
           <Box>
@@ -157,7 +157,7 @@ export const Dashboard = () =>{
                                 ))}
                             </TableRow>
                           ))
-                      : tasks.map(({task, milestone}, index) => (
+                      : tasks.map(({ task, milestone }, index) => (
                           <TableRow
                             key={task._id}
                             sx={{

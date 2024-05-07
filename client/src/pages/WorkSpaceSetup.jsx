@@ -14,22 +14,29 @@ import axios from "../api/axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
 import { notify } from "../utils/utils";
+import { ToastContainer } from "react-toastify";
 
 export default function WorkSpaceSetup() {
   const [payload, setPayload] = useState({
     name: "",
-    projects: "",
     email: "",
-    people: "",
   });
 
   const [nextBtn, setNextBtn] = useState(false);
 
   const [emails, setEmails] = useState([]);
+  
   const handleAddEmail = () => {
-    if (payload.email.trim() !== "" && !emails.includes(payload.email)) {
+    // Basic pattern for email validation
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (emailPattern.test(payload.email) && !emails.includes(payload.email)) {
       setEmails([...emails, payload.email]);
       setPayload({ ...payload, email: "" });
+    }
+    // Optionally, handle notifying the user that the email is invalid
+    else if (!emailPattern.test(payload.email)) {
+      notify("Please enter a valid email address.", "error");
     }
   };
 
@@ -41,6 +48,8 @@ export default function WorkSpaceSetup() {
     const { value, name } = e.target;
     setPayload((prev) => ({ ...prev, [name]: value }));
   };
+
+  
 
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -78,6 +87,7 @@ export default function WorkSpaceSetup() {
       component="form"
       onSubmit={submitWorkspace}
     >
+    <ToastContainer />
       <Box
         mx="auto"
         sx={{ maxWidth: { md: "500px", sm: "450px", xs: "310px" } }}
@@ -126,52 +136,6 @@ export default function WorkSpaceSetup() {
                   value={payload.name}
                   onChange={handleChange}
                 />
-              </FormControl>
-              <FormControl>
-                <label htmlFor="projects" style={{ marginBottom: "10px" }}>
-                  <Text fw="500" fs="16px" ml={5}>
-                    How many projects you intend to manage in this workspace
-                  </Text>
-                </label>
-                <Select
-                  labelId="projects"
-                  size="small"
-                  fullWidth
-                  name="projects"
-                  value={payload.projects}
-                  onChange={handleChange}
-                >
-                  {Array(10)
-                    .fill()
-                    .map((arr, index) => (
-                      <MenuItem key={index + 1} value={index + 1}>
-                        {index + 1}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
-              <FormControl>
-                <label htmlFor="people" style={{ marginBottom: "10px" }}>
-                  <Text fw="500" fs="16px" ml={5}>
-                    How many people are you working with
-                  </Text>
-                </label>
-                <Select
-                  labelId="people"
-                  size="small"
-                  fullWidth
-                  name="people"
-                  value={payload.people}
-                  onChange={handleChange}
-                >
-                  {Array(20)
-                    .fill()
-                    .map((arr, index) => (
-                      <MenuItem key={index + 1} value={index + 1}>
-                        {index + 1}
-                      </MenuItem>
-                    ))}
-                </Select>
               </FormControl>
               <FormControl variant="outlined" sx={{ width: "100%" }}>
                 <label htmlFor="name" style={{ marginBottom: "15px" }}>

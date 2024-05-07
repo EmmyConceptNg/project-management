@@ -24,6 +24,12 @@ export const Sidebar = () => {
   const location = useLocation();
   const [openModal, setOpenModal] = useState(false);
 
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+   const toggleSidebar = () => {
+     setIsSidebarCollapsed((oldState) => !oldState); // Function to toggle the sidebar collapse state
+   };
+
  const handleClick = (_id, link) => {
    setId((prevId) => (_id === prevId ? "" : _id));
    setOpen((prevOpen) => (_id === id ? !prevOpen : true));
@@ -153,7 +159,7 @@ export const Sidebar = () => {
           </Box>
         </Box>
       </Box>
-      {/* <CreateProjectModal open={openModal} setOpen={setOpenModal} refresh={() => {location.reload}}/> */}
+      <CreateProjectModal open={openModal} setOpen={setOpenModal} refresh={() => {location.reload}}/>
     </>
   );
 };

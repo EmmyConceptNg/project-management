@@ -25,7 +25,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import ClassicEditor from "ckeditor5-build-classic-mathtype";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import axios from "../../../../api/axios";
 import { useSelector } from "react-redux";
 import { notify } from "../../../../utils/utils";
@@ -53,7 +53,7 @@ export default function AddMilestone() {
   const [loading, setLoading] = useState(true);
   const user = useSelector((state) => state.user);
   const { projectId } = useParams();
-const [creatingTask, setCreatingTask] = useState(false);
+  const [creatingTask, setCreatingTask] = useState(false);
   const navigate = useNavigate();
 
   const [payload, setPayload] = useState({
@@ -79,11 +79,16 @@ const [creatingTask, setCreatingTask] = useState(false);
     setPayload({ ...payload, [name]: value });
   };
   const handleDescriptionChange = (data) => {
-    setPayload({ ...payload, notes : data });
+    setPayload({ ...payload, notes: data });
   };
 
   const handleAddMilestone = (e) => {
     e.preventDefault();
+    if (new Date(payload.endDate) <= new Date(payload.startDate)) {
+      notify("End date must be greater than the start date.", "error");
+      return; // Prevent the form submission if validation fails
+    }
+    // Proceed with milestone creation if validation passes
     setCreatingTask(true);
 
     const updatedPayload = { ...payload, projectId };
@@ -100,9 +105,11 @@ const [creatingTask, setCreatingTask] = useState(false);
       });
   };
 
+  // ...
+
   return (
     <>
-    <ToastContainer />
+      <ToastContainer />
       <Box
         borderBottom="1px solid #D9D9D9 "
         mb={3}
@@ -189,7 +196,7 @@ const [creatingTask, setCreatingTask] = useState(false);
                 type="date"
                 value={payload.endDate}
                 inputProps={{
-                  min: today,
+                  min: payload.startDate, // The minimum end date now depends on the start date
                 }}
                 onChange={handleChange}
               />
@@ -242,6 +249,9 @@ const [creatingTask, setCreatingTask] = useState(false);
                 onReady={(editor) => {
                   console.log("Editor is ready to use!", editor);
                 }}
+                config={{
+                  height: "500px", // Set the height you prefer
+                }}
                 onChange={(event, editor) => {
                   const data = editor.getData();
                   handleDescriptionChange(data);
@@ -257,32 +267,38 @@ const [creatingTask, setCreatingTask] = useState(false);
             </FormControl>
           </Grid>
         </Grid>
-       <Box display="flex" justifyContent="flex-end">
-         <Stack
-          mt={5}
-          direction="row"
-          spacing={2}
-          justifyContent="space-evenly"
-          alignItems="center"
-        >
-          <Button
-            sx={{ height: "44px", borderRadius: "10px" }}
-            fullWidth
-            onClick={() => {}}
-            variant="outlined"
+        <Box display="flex" justifyContent="flex-end">
+          <Stack
+            mt={5}
+            direction="row"
+            spacing={2}
+            justifyContent="space-evenly"
+            alignItems="center"
           >
-            Cancel
-          </Button>
-          <LoadingButton loading={creatingTask}
-            sx={{ height: "44px", borderRadius: "10px", textWrap: 'nowrap', width: '400px' }}
-            fullWidth
-            type="submit"
-            variant="contained"
-          >
-            Create Milestone
-          </LoadingButton>
-        </Stack>
-       </Box>
+            <Button
+              sx={{ height: "44px", borderRadius: "10px" }}
+              fullWidth
+              onClick={() => {}}
+              variant="outlined"
+            >
+              Cancel
+            </Button>
+            <LoadingButton
+              loading={creatingTask}
+              sx={{
+                height: "44px",
+                borderRadius: "10px",
+                textWrap: "nowrap",
+                width: "400px",
+              }}
+              fullWidth
+              type="submit"
+              variant="contained"
+            >
+              Create Milestone
+            </LoadingButton>
+          </Stack>
+        </Box>
       </Box>
     </>
   );

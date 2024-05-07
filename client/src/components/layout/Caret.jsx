@@ -137,24 +137,7 @@ export default function Caret() {
                 />
               </FormControl>
             </Box>
-            <Box>
-              <FormControl variant="outlined" sx={{ width: "100%" }}>
-                <label htmlFor="password" style={{ marginBottom: "10px" }}>
-                  <Text fw="500" fs="16px" ml={5}>
-                    Your Industry
-                  </Text>
-                </label>
-                <OutlinedInput
-                  size="small"
-                  required
-                  id="fullname"
-                  type="text"
-                  name="fullname"
-                  readOnly
-                  value={user?.industry}
-                />
-              </FormControl>
-            </Box>
+            
           </Stack>
         </Box>
       </Menu>

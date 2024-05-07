@@ -14,7 +14,7 @@ export default function ProfileSetup() {
   const [payload, setPayload] = useState({
     fullName: "",
     industry: "",
-    timeZone: "",
+    timeZone: moment.tz.guess(),
     phone: "",
   });
 
@@ -139,19 +139,21 @@ export default function ProfileSetup() {
               fullWidth
               name="timeZone"
             >
-              {timezones.map((timezone) => {  return (
-                // Format the display of the time zone, if desired
-                <MenuItem key={timezone} value={timezone}>
-                  {`${timezone} (UTC ${moment.tz(timezone).format("Z")})`}
-                </MenuItem>
-              )})}
+              {timezones.map((timezone) => {
+                return (
+                  // Format the display of the time zone, if desired
+                  <MenuItem key={timezone} value={timezone}>
+                    {`${timezone} (UTC ${moment.tz(timezone).format("Z")})`}
+                  </MenuItem>
+                );
+              })}
             </Select>
           </FormControl>
 
           <Box>
             <PhoneInput
               style={{ minWidth: "100%" }}
-              defaultCountry="ua"
+              defaultCountry="us" 
               value={payload.phone}
               onChange={(phone) => setPayload({ ...payload, phone: phone })}
             />
