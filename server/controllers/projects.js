@@ -20,6 +20,7 @@ const { ObjectId } = mongoose.Types;
 
 
 
+
 export const index = async (req, res) => {
   const { workspaceId, status } = req.params;
 
@@ -32,66 +33,105 @@ export const index = async (req, res) => {
       .populate("team.userId")
       .populate("owner", "fullName");
 
-    const enrichedProjects = await Promise.all(
-      projects.map(async (project) => {
-        const milestones = await Milestone.find({ projectId: project._id });
-        const totalMilestoneCount = milestones.length;
+    let totalCompletedTasks = 0;
+    let totalPlannedTasks = 0;
+    let totalActualTasks = 0;
+    let workspaceOverdueMilestones = 0;
+    let totalCompletedProjects = 0;
 
-        let completedTasksCount = 0;
-        let totalTasksCount = 0;
-        let overdueMilestoneCount = 0;
-        let totalPlannedTaskCompletion = 0;
-        let currentDate = new Date();
 
-        for (const milestone of milestones) {
-          const tasks = await Tasks.find({ milestoneId: milestone._id });
-          // Ensure that the tasks are properly retrieved and are an array
-          if (Array.isArray(tasks)) {
-            completedTasksCount += tasks.filter(
-              (task) => task.status === "completed"
-            ).length;
-            totalTasksCount += tasks.length;
+   const enrichedProjects = await Promise.all(
+     projects.map(async (project) => {
+       const milestones = await Milestone.find({ projectId: project._id });
+       const totalMilestoneCount = milestones.length;
 
+      let projectCompletedTasks = 0;
+      let projectPlannedTasks = 0;
+      let projectActualTasks = 0;
+      let projectOverdueMilestones = 0;
+      let currentDate = new Date();
+      let projectIsCompleted = true;
+
+       for (const milestone of milestones) {
+         const tasks = await Tasks.find({ milestoneId: milestone._id });
+
+         // Ensure that the tasks are properly retrieved and are an array
+         if (Array.isArray(tasks)) {
+            projectActualTasks += tasks.length;
+            totalActualTasks += tasks.length;
             tasks.forEach((task) => {
               const taskDueDate = new Date(task.endDate);
-              if (task.status !== "completed" && currentDate > taskDueDate) {
-                overdueMilestoneCount++;
+              if (task.status === 'completed') {
+                projectCompletedTasks++;
+                totalCompletedTasks++;
+              } else {
+                projectIsCompleted = false; // If any task is not completed, the project is not completed.
               }
-              if (currentDate >= taskDueDate) {
-                totalPlannedTaskCompletion++;
+              if (currentDate > taskDueDate) {
+                projectPlannedTasks++;
+                totalPlannedTasks++;
+                if (task.status !== 'completed') {
+                  projectOverdueMilestones++;
+                  workspaceOverdueMilestones++;
+                }
               }
             });
+          } else {
+            projectIsCompleted = false; // Mark project as incomplete if there are no tasks.
           }
+        
+       }
+
+        if (projectIsCompleted && projectActualTasks > 0) {
+          totalCompletedProjects++;
         }
 
-        let projectScheduleVariance =
-          totalTasksCount > 0
-            ? (completedTasksCount - totalPlannedTaskCompletion) /
-              totalTasksCount
-            : 0; // Prevent division by zero
+       // Calculate schedule variance and completion percentage for the project
+       let projectScheduleVariance = projectPlannedTasks
+         ? (projectCompletedTasks - projectPlannedTasks) / projectPlannedTasks
+         : 0;
+       
+       let projectCompletionPercentage = projectActualTasks
+         ? (projectCompletedTasks / projectActualTasks) * 100
+         : 0;
 
-        let isAheadOfSchedule = projectScheduleVariance > 0;
-        let projectStatus =
-          overdueMilestoneCount > 0 ? "off track" : "on track";
-        let completionPercentage =
-          totalTasksCount > 0
-            ? (completedTasksCount / totalTasksCount) * 100
-            : 0;
+       // Determine project status
+       let isProjectAheadOfSchedule = projectScheduleVariance > 0;
+       let projectStatus =
+         projectOverdueMilestones > 0 ? "off track" : "on track";
 
-        return {
-          ...project.toObject(),
-          completedTasksCount,
-          projectStatus,
-          overdueMilestoneCount,
-          totalMilestoneCount,
-          completionPercentage: completionPercentage.toFixed(2),
-          isAheadOfSchedule,
-          scheduleVariance: projectScheduleVariance.toFixed(2),
-        };
-      })
-    );
+       return {
+         ...project.toObject(),
+         completedTasks: projectCompletedTasks,
+         status: projectStatus,
+         overdueMilestones: projectOverdueMilestones,
+         totalMilestones: totalMilestoneCount,
+         completionPercentage: projectCompletionPercentage.toFixed(2),
+         isAheadOfSchedule: isProjectAheadOfSchedule,
+         scheduleVariance: (projectScheduleVariance * 100).toFixed(2),
+       };
+     })
+   );
 
-    res.status(200).json({ projects: enrichedProjects });
+    // Calculate workspace-level aggregates
+    let workspaceScheduleVariance = totalPlannedTasks
+      ? (totalCompletedTasks - totalPlannedTasks) / totalPlannedTasks
+      : 0;
+    let workspaceCompletionPercentage = totalActualTasks
+      ? (totalCompletedTasks / totalActualTasks) * 100
+      : 0;
+
+    let workspaceSummary = {
+      totalScheduleVariance: (workspaceScheduleVariance * 100).toFixed(2),
+      totalCompletionPercentage: workspaceCompletionPercentage.toFixed(2),
+      totalOverdueMilestones: workspaceOverdueMilestones,
+      totalCompletedProjects: totalCompletedProjects
+      // Add other metrics as needed
+    };
+
+    res
+      .status(200)
+      .json({ projects: enrichedProjects, summary: workspaceSummary });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
