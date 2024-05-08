@@ -55,7 +55,7 @@ export default function Ongoing() {
   const id = open ? "simple-popover" : undefined;
 
   const navigate = useNavigate();
-
+const [summary, setSummary] = useState({})
   const [openModal, setOpenModal] = useState(false);
   const [openAccessModal, setOpenAccessModal] = useState(false);
   const [openInvite, setOpenInvite] = useState(false);
@@ -65,30 +65,6 @@ export default function Ongoing() {
   
   const [selectedProject, setSelectedProject] = useState(null);
 
-  const markComplete = (projectId) => {
-    setPageLoading(true);
-    axios.get(`/api/projects/${projectId}/update-status/completed`).then(() => {
-      const updatedProjects = projects.filter(
-        (project) => project._id !== projectId
-      );
-      setProjects(updatedProjects);
-      setPageLoading(false);
-    });
-  };
-
-  const handleEditTask = (project) => {
-    setSelectedProject(project);
-    setOpenModal(true);
-    handleClose();
-  };
-  const handleInvitePeople = (project) => {
-    setSelectedProject(project);
-    setOpenInvite(true);
-    handleClose();
-  };
-  const handleEditTaskAccess = () => {
-    setOpenAccessModal(true);
-  };
 
   const workspace = useSelector((state) => state.workspace);
 
@@ -101,6 +77,7 @@ export default function Ongoing() {
     setPageLoading(true);
     axios.get(`/api/projects/${workspace?._id}/ongoing`).then((response) => {
       setProjects(response.data.projects);
+      setSummary(response.data.summary);
       setPageLoading(false);
     });
   };
@@ -349,7 +326,7 @@ export default function Ongoing() {
         </Grid> */}
 
         <ProjectTable
-          
+          summary={summary}
           projects={projects}
           setProjects={setProjects}
           loading={pageLoading}

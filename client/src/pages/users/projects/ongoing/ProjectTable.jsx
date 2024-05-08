@@ -33,6 +33,7 @@ export default function ProjectTable({
   setLoading,
   setProjects,
   getProject,
+  summary
 }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(null);
@@ -120,7 +121,7 @@ export default function ProjectTable({
                         whiteSpace: "nowrap",
                         fontSize: "18px",
                         color: "#262626",
-                        textAlign: table === "Milestone" ? "left" : "center",
+                        textAlign: table === "Project Name" ? "left" : "center",
                       }}
                       key={_index}
                     >
@@ -131,6 +132,43 @@ export default function ProjectTable({
               </TableHead>
 
               <TableBody>
+                <TableRow>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell
+                    sx={{
+                      fontSize: "16px",
+                      fontWeight: "400",
+                      color: "#262626",
+                      whiteSpace: "nowrap",
+                      textAlign: "center",
+                    }}
+                  >
+                    <Box>
+                      {`${summary.totalCompletionPercentage}%` ?? "N/A"}
+                    </Box>
+                  </TableCell>
+
+                  <TableCell></TableCell>
+                  <TableCell
+                    sx={{
+                      fontSize: "16px",
+                      fontWeight: "400",
+                      color: "#262626",
+                      whiteSpace: "nowrap",
+                      textAlign: "center",
+                    }}
+                  >
+                    <Box>
+                      {`${summary.totalScheduleVariance}%` ?? "N/A"}
+                    </Box>
+                  </TableCell>
+                  
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                </TableRow>
                 {loading
                   ? Array(4)
                       .fill("")
@@ -191,7 +229,7 @@ export default function ProjectTable({
                             textAlign: "center",
                           }}
                         >
-                          {project?.totalMilestoneCount ?? "N/A"}
+                          {project?.totalMilestones ?? "N/A"}
                         </TableCell>
                         <TableCell
                           sx={{
@@ -216,7 +254,7 @@ export default function ProjectTable({
                         >
                           <Box
                             bgcolor={
-                              project?.projectStatus === "off track"
+                              project?.status === "off track"
                                 ? "#FFF3F3"
                                 : "#E9FFE5"
                             }
@@ -237,12 +275,12 @@ export default function ProjectTable({
                         >
                           <Box
                             bgcolor={
-                              project?.projectStatus === "off track"
+                              project?.status === "off track"
                                 ? "#FFF3F3"
                                 : "#E9FFE5"
                             }
                           >
-                            {project.projectStatus}
+                            {project.status}
                           </Box>
                         </TableCell>
 
@@ -257,7 +295,7 @@ export default function ProjectTable({
                         >
                           <Box
                             bgcolor={
-                              project?.projectStatus === "off track"
+                              project?.status === "off track"
                                 ? "#FFF3F3"
                                 : "#E9FFE5"
                             }
