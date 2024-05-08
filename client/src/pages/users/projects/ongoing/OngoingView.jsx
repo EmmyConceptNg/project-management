@@ -1,12 +1,13 @@
 import { Avatar, AvatarGroup, Box, Container, Divider, Grid, IconButton, LinearProgress, List, ListItem, ListItemAvatar, ListItemText, Popover, Stack } from '@mui/material'
 import Text from '../../../../components/utils/Text';
-import { ArrowBackIos, Delete, Folder, MoreVert } from '@mui/icons-material';
+import { ArrowBackIos, Delete, Edit, Folder, MoreVert } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import ProjectLoader from '../../../../components/utils/ProjectLoader';
 import axios from '../../../../api/axios';
 import { useSelector } from 'react-redux';
+import EditTaskModal from '../../../../components/projectManagers/EditTaskModal';
 
 export default function OngoingView() {
    const [anchorEl, setAnchorEl] = useState(null);
@@ -15,6 +16,14 @@ export default function OngoingView() {
 const [project, setProject] = useState([])
    const [loading, setLoading] = useState(true)
    const user = useSelector(state => state.user );
+   const [openModal, setOpenModal] = useState(false);
+   const [selectedProject, setSelectedProject] = useState(null);
+
+   const handleEditTask = (project) => {
+     setSelectedProject(project);
+     setOpenModal(true);
+     handleClose();
+   };
 
    const handleClick = (event, index) => {
      setAnchorEl(event.currentTarget);
@@ -51,7 +60,10 @@ const [project, setProject] = useState([])
         alignItems="center"
       >
         <Box display={"flex"} gap={2} alignItems="center" sx={{ mb: "20px" }}>
-          <IconButton sx={{ my: "auto" }} onClick={() => navigate('/dashboard/projects/ongoing')}>
+          <IconButton
+            sx={{ my: "auto" }}
+            onClick={() => navigate("/dashboard/projects/ongoing")}
+          >
             <ArrowBackIos sx={{ color: "#1A1A1A" }} />
           </IconButton>
           <Text fw="600" fs="22px">
@@ -67,11 +79,15 @@ const [project, setProject] = useState([])
         alignItems="center"
       >
         {!loading ? (
-          <Box mb={3}>
+          <Stack direction="row" spacing={2} alignItems="center"  mb={3}>
             <Text fw="600" fs="22px">
               {project?.name}
             </Text>
-          </Box>
+
+            <IconButton onClick={() => handleEditTask(project)}>
+              <Edit />
+            </IconButton>
+          </Stack>
         ) : (
           <ProjectLoader sx={{ height: "50px" }} />
         )}
@@ -128,6 +144,12 @@ const [project, setProject] = useState([])
           ))}
         </List>
       </Box>
+
+      <EditTaskModal
+        open={openModal}
+        setOpen={setOpenModal}
+        project={selectedProject}
+      />
     </>
   );
 }

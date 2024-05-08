@@ -147,11 +147,9 @@ export default function ProjectTable({
                       ))
                   : projects?.map((project, index) => (
                       <TableRow
-                        // onClick={() =>
-                        //   navigate(
-                        //     `/dashboard/projects/ongoing/${milestone?._id}/breakdown`
-                        //   )
-                        // }
+                        onClick={() => {
+                          navigate(`${project._id}`);
+                        }}
                         key={project._id}
                         sx={{
                           "&:last-child td, &:last-child th": {
@@ -193,7 +191,7 @@ export default function ProjectTable({
                             textAlign: "center",
                           }}
                         >
-                          {project?.taskCount ?? "-"}
+                          {project?.totalMilestoneCount ?? "N/A"}
                         </TableCell>
                         <TableCell
                           sx={{
@@ -218,12 +216,12 @@ export default function ProjectTable({
                         >
                           <Box
                             bgcolor={
-                              project?.status === "off track"
+                              project?.projectStatus === "off track"
                                 ? "#FFF3F3"
                                 : "#E9FFE5"
                             }
                           >
-                            {`${project.complete}%` ?? "-"}
+                            {`${project.completionPercentage}%` ?? "N/A"}
                           </Box>
                         </TableCell>
 
@@ -239,12 +237,12 @@ export default function ProjectTable({
                         >
                           <Box
                             bgcolor={
-                              project?.status === "off track"
+                              project?.projectStatus === "off track"
                                 ? "#FFF3F3"
                                 : "#E9FFE5"
                             }
                           >
-                            {project.status}
+                            {project.projectStatus}
                           </Box>
                         </TableCell>
 
@@ -259,12 +257,12 @@ export default function ProjectTable({
                         >
                           <Box
                             bgcolor={
-                              project?.status === "off track"
+                              project?.projectStatus === "off track"
                                 ? "#FFF3F3"
                                 : "#E9FFE5"
                             }
                           >
-                            {`${project.schedule}%` ?? "-"}
+                            {`${project.scheduleVariance}%` ?? "-"}
                           </Box>
                         </TableCell>
 
@@ -343,8 +341,8 @@ export default function ProjectTable({
                                 Rename Project
                               </Text>
 
-                              <Divider sx={{ my: 1 }} />
-                              <Text
+                              {/* <Divider sx={{ my: 1 }} /> */}
+                              {/* <Text
                                 fw="500"
                                 fs="18px"
                                 color="#1a1a1a"
@@ -353,8 +351,8 @@ export default function ProjectTable({
                               >
                                 Invite People
                               </Text>
-                              <Divider sx={{ my: 1 }} />
-                              <Text
+                              <Divider sx={{ my: 1 }} /> */}
+                              {/* <Text
                                 fw="500"
                                 fs="18px"
                                 color="#1a1a1a"
@@ -362,7 +360,7 @@ export default function ProjectTable({
                                 onClick={() => markComplete(project._id)}
                               >
                                 Mark Complete
-                              </Text>
+                              </Text> */}
                             </Box>
                           </Popover>
                         </TableCell>

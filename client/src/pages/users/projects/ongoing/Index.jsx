@@ -131,6 +131,222 @@ export default function Ongoing() {
         </Box>
       </Box>
       <Box>
+        {/* <Grid
+          container
+          spacing={{ md: 2, lg: 2, sm: 1, xs: 1 }}
+          direction="row"
+          justify="flex-start"
+          alignItems="flex-start"
+          alignContent="stretch"
+        >
+          {pageLoading &&
+            Array(20)
+              .fill()
+              .map((arr, index) => (
+                <Grid item md={4} lg={4} sm={6} xs={12} key={index}>
+                  <ProjectLoader sx={{ height: "264px" }} />
+                </Grid>
+              ))}
+          {!pageLoading &&
+            projects.map((item) => (
+              <Grid item md={4} lg={4} sm={6} xs={12} key={item._id}>
+                <Box
+                  bgcolor="#fff"
+                  border="1px solid #D9D9D9"
+                  borderRadius="8px"
+                  height="264px"
+                  px={2}
+                  py={1.5}
+                  sx={{
+                    cursor: "pointer",
+                  }}
+                >
+                  <Stack direction="row" justifyContent="space-between">
+                    <Box onDoubleClick={() => handleEditTask(item)}>
+                      <Text
+                        fw="500"
+                        fs="18px"
+                        color="#1a1a1a"
+                        sx={{ cursor: "pointer" }}
+                      >
+                        {item?.name}
+                      </Text>
+                    </Box>
+                    <IconButton
+                      onClick={(event) => handleClick(event, item._id)}
+                    >
+                      <MoreVert />
+                    </IconButton>
+                    <Popover
+                      id={id}
+                      open={open && selectedIndex === item._id}
+                      anchorEl={anchorEl}
+                      onClose={handleClose}
+                      anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "right",
+                      }}
+                      transformOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                      }}
+                    >
+                      <Box p={2}>
+                        <Text
+                          fw="500"
+                          fs="18px"
+                          color="#1a1a1a"
+                          sx={{ cursor: "pointer" }}
+                          onClick={() => {
+                            navigate(`${item._id}`);
+                          }}
+                        >
+                          View Project
+                        </Text>
+
+                        <Divider sx={{ my: 1 }} />
+                        <Text
+                          fw="500"
+                          fs="18px"
+                          color="#1a1a1a"
+                          sx={{ cursor: "pointer" }}
+                          onClick={() => {
+                            navigate(`${item._id}/edit-project`);
+                          }}
+                        >
+                          Edit Project
+                        </Text>
+                        <Divider sx={{ my: 1 }} />
+                        <Text
+                          fw="500"
+                          fs="18px"
+                          color="#1a1a1a"
+                          sx={{ cursor: "pointer" }}
+                          onClick={() => handleEditTask(item)}
+                        >
+                          Rename Project
+                        </Text>
+
+                        <Divider sx={{ my: 1 }} />
+                        <Text
+                          fw="500"
+                          fs="18px"
+                          color="#1a1a1a"
+                          sx={{ cursor: "pointer" }}
+                          onClick={() => handleInvitePeople(item)}
+                        >
+                          Invite People
+                        </Text>
+                        <Divider sx={{ my: 1 }} />
+                        <Text
+                          fw="500"
+                          fs="18px"
+                          color="#1a1a1a"
+                          sx={{ cursor: "pointer" }}
+                          onClick={() => markComplete(item._id)}
+                        >
+                          Mark Complete
+                        </Text>
+                      </Box>
+                    </Popover>
+                  </Stack>
+                  <Box
+                    onClick={() => {
+                      navigate(`${item._id}`);
+                    }}
+                  >
+                    <Text fw="500" fs="12px" color="#1a1a1a">
+                      Project Owner: {item.owner.fullName}
+                    </Text>
+                    <Text fw="500" fs="12px" color="#1a1a1a">
+                      Project Manager: {item.manager}
+                    </Text>
+                  </Box>
+                  <Box
+                    my={2}
+                    onClick={() => {
+                      navigate(`${item._id}`);
+                    }}
+                  >
+                    <Stack direction="row" spacing={5}>
+                      <Box>
+                        <Text fw="500" fs="12px" color="#1a1a1a">
+                          Start Date
+                        </Text>
+                        <Text fw="500" fs="14px" color="#1a1a1a">
+                          {moment(item.startDate).format("MMM Do YYYY")}
+                        </Text>
+                      </Box>
+                      <Box>
+                        <Text fw="500" fs="12px" color="#1a1a1a">
+                          End Date
+                        </Text>
+                        <Text fw="500" fs="14px" color="#1a1a1a">
+                          {moment(item.endDate).format("MMM Do YYYY")}
+                        </Text>
+                      </Box>
+                    </Stack>
+                  </Box>
+                  <Box
+                    onClick={() => {
+                      navigate(`${item._id}`);
+                    }}
+                  >
+                    <LinearProgress
+                      color="success"
+                      variant="determinate"
+                      value={item.progress}
+                    />
+                    <Stack
+                      direction="row"
+                      justifyContent="space-between"
+                      mt="4px"
+                    >
+                      <Text fw="500" fs="10px" color="#1a1a1a">
+                        Progress
+                      </Text>
+                      <Text fw="500" fs="10px" color="#1a1a1a">
+                        {`${item.progress}%`}
+                      </Text>
+                    </Stack>
+                  </Box>
+                  <Box
+                    my={1}
+                    onClick={() => {
+                      navigate(`${item._id}`);
+                    }}
+                  >
+                    <Text fw="500" fs="12px" color="#1a1a1a">
+                      {`${item.team.length} Team Members`}
+                    </Text>
+                    <Box display="flex" mt="2px">
+                      <AvatarGroup alignItems="flex-start">
+                        {item.team.map((member) => (
+                          <Avatar
+                            key={member?._id}
+                            sx={{ width: "24px", height: "24px" }}
+                            alt={member?.fullName || member?.userEmail}
+                            src="/static/images/avatar/1.jpg"
+                          />
+                        ))}
+                      </AvatarGroup>
+                    </Box>
+                  </Box>
+                  <Box
+                    onClick={() => {
+                      navigate(`${item._id}`);
+                    }}
+                  >
+                    <Text fw="500" fs="10px" color="#1a1a1a">
+                      {`Last Updated By ${item.updatedBy ?? ""}: ${moment(
+                        item.updatedAt
+                      ).format("MMM Do YYYY")}`}
+                    </Text>
+                  </Box>
+                </Box>
+              </Grid>
+            ))}
+        </Grid> */}
 
         <ProjectTable
           
