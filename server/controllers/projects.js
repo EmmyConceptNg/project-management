@@ -1,20 +1,100 @@
+import Milestone from "../models/Milestone.js";
 import Tasks from "../models/Tasks.js";
 import Project from "../models/project.js";
 import mongoose from "mongoose";
 const { ObjectId } = mongoose.Types;
 
-export const index = (req, res) => {
+// export const index = (req, res) => {
+//   const { workspaceId, status } = req.params;
+
+//   if (!mongoose.Types.ObjectId.isValid(workspaceId)) {
+//     return res.status(400).json({ error: "Invalid workspaceId" });
+//   }
+
+//   Project.find({ workspaceId: workspaceId, status })
+//     .populate("team.userId")
+//     .populate("owner", "fullName")
+//     .then((projects) => res.status(200).json({ projects }))
+//     .catch((error) => res.status(400).json({ error: error.message }));
+// };
+
+
+
+export const index = async (req, res) => {
   const { workspaceId, status } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(workspaceId)) {
     return res.status(400).json({ error: "Invalid workspaceId" });
   }
 
-  Project.find({ workspaceId: workspaceId, status })
-    .populate("team.userId")
-    .populate("owner", "fullName")
-    .then((projects) => res.status(200).json({ projects }))
-    .catch((error) => res.status(400).json({ error: error.message }));
+  try {
+    const projects = await Project.find({ workspaceId, status })
+      .populate("team.userId")
+      .populate("owner", "fullName");
+
+    const enrichedProjects = await Promise.all(
+      projects.map(async (project) => {
+        const milestones = await Milestone.find({ projectId: project._id });
+        const totalMilestoneCount = milestones.length;
+
+        let completedTasksCount = 0;
+        let totalTasksCount = 0;
+        let overdueMilestoneCount = 0;
+        let totalPlannedTaskCompletion = 0;
+        let currentDate = new Date();
+
+        for (const milestone of milestones) {
+          const tasks = await Tasks.find({ milestoneId: milestone._id });
+          // Ensure that the tasks are properly retrieved and are an array
+          if (Array.isArray(tasks)) {
+            completedTasksCount += tasks.filter(
+              (task) => task.status === "completed"
+            ).length;
+            totalTasksCount += tasks.length;
+
+            tasks.forEach((task) => {
+              const taskDueDate = new Date(task.endDate);
+              if (task.status !== "completed" && currentDate > taskDueDate) {
+                overdueMilestoneCount++;
+              }
+              if (currentDate >= taskDueDate) {
+                totalPlannedTaskCompletion++;
+              }
+            });
+          }
+        }
+
+        let projectScheduleVariance =
+          totalTasksCount > 0
+            ? (completedTasksCount - totalPlannedTaskCompletion) /
+              totalTasksCount
+            : 0; // Prevent division by zero
+
+        let isAheadOfSchedule = projectScheduleVariance > 0;
+        let projectStatus =
+          overdueMilestoneCount > 0 ? "off track" : "on track";
+        let completionPercentage =
+          totalTasksCount > 0
+            ? (completedTasksCount / totalTasksCount) * 100
+            : 0;
+
+        return {
+          ...project.toObject(),
+          completedTasksCount,
+          projectStatus,
+          overdueMilestoneCount,
+          totalMilestoneCount,
+          completionPercentage: completionPercentage.toFixed(2),
+          isAheadOfSchedule,
+          scheduleVariance: projectScheduleVariance.toFixed(2),
+        };
+      })
+    );
+
+    res.status(200).json({ projects: enrichedProjects });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 export const getProject = (req, res) => {
