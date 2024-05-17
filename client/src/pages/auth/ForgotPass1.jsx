@@ -68,13 +68,9 @@ export default function ForgotPass1() {
               spacing={5}
               sx={{ width: { lg: "520px", sm: "450px" } }}
             >
-              <Text fw="600" fs="24px" color="#1A1A1A">
                 Forgot Password?
               </Text>
               <Text fw="400" color="#1A1A1A" fs="16px" mt={10}>
-                Enter your email that you used at time of account setup to
-                recover account
-              </Text>
               <Box component="form" onSubmit={handleEmailLink}>
                 <Stack
                   spacing={2}

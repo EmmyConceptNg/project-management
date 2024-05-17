@@ -26,10 +26,6 @@ import { ToastContainer } from "react-toastify";
 import axios from "../../api/axios";
 import { useEffect, useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
-import { Icon } from "@iconify/react";
-
-export default function Signup() {
-  const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const workspaceEmail = queryParams.get('email') ?? ""; 
 

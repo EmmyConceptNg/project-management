@@ -5,7 +5,6 @@ export const MenuItems = [
     icon: "radix-icons:dashboard",
     link: "/dashboard/app",
   },
-
   {
     id: "projects",
     name: "Projects",

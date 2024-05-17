@@ -28,9 +28,6 @@ import {
 } from "@mui/material";
 
 import { ArrowBackIos, Delete, DeleteForever, Edit, Folder, MoreVert } from "@mui/icons-material";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Icon } from "@iconify/react";
 import Text from "../../../../components/utils/Text";
 import TableLoader from "../../../../components/utils/TableLoader";
 import moment from "moment";
@@ -202,7 +199,6 @@ export default function TaskBreakdownTable({ milestone, loading, fetchMilestone,
                         >
                           {task.name}
                         </TableCell>
-
                         <TableCell
                           sx={{
                             fontSize: "16px",

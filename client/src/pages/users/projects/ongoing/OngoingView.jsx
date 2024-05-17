@@ -8,10 +8,7 @@ import ProjectLoader from '../../../../components/utils/ProjectLoader';
 import axios from '../../../../api/axios';
 import { useSelector } from 'react-redux';
 import EditTaskModal from '../../../../components/projectManagers/EditTaskModal';
-
 export default function OngoingView() {
-   const [anchorEl, setAnchorEl] = useState(null);
-   const [selectedIndex, setSelectedIndex] = useState(null);
    const {projectId} = useParams()
 const [project, setProject] = useState([])
    const [loading, setLoading] = useState(true)

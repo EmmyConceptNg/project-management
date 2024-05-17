@@ -25,14 +25,11 @@ export default function Nav(){
     const handleLogout = () =>{
       dispatch({type : 'LOGOUT' })
       navigate('/login')
-      handleClose();
     }
     return (
       <>
         <Box display={{ xs: "none", sm: "flex" }} alignItems="center">
           <Notification />
-          <Box display="flex" alignItems="center">
-            <IconButton
               size="small"
               sx={{ ml: 2 }}
               aria-controls={open ? "account-menu" : undefined}
